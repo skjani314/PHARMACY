@@ -20,13 +20,12 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
   }))
-
+//hi
 
   app.use((err, req, res, next) => {
     console.error(err.stack);
     return res.status(500).json({ error: true });
   });
-
 
 
 app.listen(process.env.PORT, () => { console.log("server is running") });
