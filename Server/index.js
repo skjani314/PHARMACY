@@ -29,6 +29,7 @@ app.use(cookieParser());
 
 app.use(cors());
 
+<<<<<<< HEAD
 
 mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
   useNewUrlParser: true,
@@ -319,7 +320,12 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   return res.status(500).json({ error: true });
 });
-
+=======
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    return res.status(500).json({ error: true });
+  });
+>>>>>>> 5a31ce4bdc91dc5a0c3457554fab1cd9b3457464
 
 
 app.listen(process.env.PORT, () => { console.log("server is running") });
