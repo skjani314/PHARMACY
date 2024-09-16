@@ -1,0 +1,15 @@
+@media screen and (max-width:767px){
+    .home-header-sidebar{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 94vh;
+    }
+    
+}
+@media screen and (min-width:768px){
+    .home-container{
+        background-color: whitesmoke;
+        height:100vh;
+    }
+}
