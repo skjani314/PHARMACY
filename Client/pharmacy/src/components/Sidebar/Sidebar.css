@@ -1,0 +1,161 @@
+@media screen and (min-width:10px){
+    .sidebar-container-md{
+        display: none;
+    }
+  
+    .sidebar-container-mobile{
+        list-style-type: none;
+        display: flex;
+        background-color: red;
+        padding-right: 30px;
+        box-sizing: border-box;
+        justify-content: space-between;
+    }
+    .icon-container-mobile{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .icon-container-mobile svg{
+        width:40px;
+        height:40px;
+        color:#ffffff;
+    }
+    
+    
+    .active-tab-color{
+        background-color: blue;
+        border-radius: 8px;
+        padding: 6px;
+    }
+}
+@media screen and (min-width:577px){
+    .sidebar-container-mobile{
+        list-style-type: none;
+        display: flex;
+        background-color: red;
+        padding-right: 30px;
+        box-sizing: border-box;
+        justify-content: space-around;
+    }
+}
+
+@media screen and (min-width:768px){
+    .unordered-list{
+        list-style-type: none;
+        margin-left: 0px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        height: 80vh;
+    }
+
+    .sidebar-container-md{
+        display: block;
+        background-color:#ffffff;
+        margin-top: 90px;
+        height:83vh;
+        position: fixed;
+        width: 100px;
+        left: 0;
+        padding-right: 10px;
+        border-radius: 20px;
+        margin-left: 15px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .sidebar-container-mobile{
+        display: none;
+    }
+    .sidebar-icon-container{
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .sidebar-icon-container svg {
+        width: 30px;
+        height: 30px;
+        color:grey;
+      margin-right: 10px;
+      
+    }
+    .sidebar-icon-container p{
+        color:gray;
+        width: 100px;
+       display: none;
+    }
+    .sidebar-icon-container:hover {
+        background-color: lightgrey;
+       background-size: cover;
+       padding-left: 10px;
+       border-radius: 8px;
+    }
+    
+    .sidebar-icon-container.active-tab-color:hover{
+        background-color: blue;
+        
+    }
+    .active-tab-color{
+        background-color: blue;
+        border-radius: 8px;
+        padding: 10px;
+        
+    }
+    .main-heading{
+        font-family: "Roboto";
+        font-size: 20px;
+        text-align: center;
+        display: none;
+    }
+    .pharmacy-image{
+        width: 110px;
+        height:120px;
+    }
+    .hr-line{
+        margin-top: 0px;
+        width: 60px;
+        margin-bottom: 30px;
+    }
+}
+@media screen and (min-width:993px) {
+    .sidebar-container-md{
+        width: 170px;
+    }
+    .sidebar-icon-container p{
+        color:#000000;
+        width: 100px;
+        display: block;
+    }
+    .active-tab-color{
+        background-color: blue;
+        border-radius: 8px;
+       padding: 0px;
+        
+    }
+    .sidebar-icon-container{
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+        margin-bottom: 0px;
+    }
+    .main-heading{
+        font-family: "Roboto";
+        font-size: 20px;
+        text-align: center;
+        display: block;
+        margin-top: 30px;
+        
+    }
+    .pharmacy-image{
+        display: none;
+    }
+    .hr-line{
+        width: 110px;
+        margin-bottom: 30px;
+    }
+   
+}
+@media screen and (min-width:1201px){
+    .sidebar-container-md{
+        width: 180px;
+    }
+}

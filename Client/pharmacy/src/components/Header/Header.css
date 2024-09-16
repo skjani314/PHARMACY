@@ -1,0 +1,99 @@
+@media screen and (min-width:100px){
+    .styling-logo{
+        height:50px;
+        width:50px;
+        object-fit: contain;
+    }
+    .header-container{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+    }
+    .logout-button{
+        background-color:#3b82f6;
+        padding:10px;
+        color:#ffffff;
+        border-style:none;
+        border-radius:5px;
+
+    }
+    .styling-icon{
+        height:30px;
+        width:30px;
+        margin-right: 10px;
+        margin-top: 5px;
+    }
+    .logout-container{
+        display: flex;
+        margin-top: 10px;
+    }
+    .header{
+        display: flex;
+        justify-content: space-between;
+        width: 70vw;
+    }
+    .styling-input{
+        border-style:solid;
+        outline: none;
+        cursor:pointer;
+        padding:3px;
+        margin-top: 20px;
+        width: 200px;
+    }
+}
+
+@media screen and (min-width:768px){
+    .styling-logo{
+        height:40px;
+        width:40px;
+        margin-left: 10px;
+        object-fit: contain;
+    }
+    .header-container{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: #ffffff;
+        position: fixed;
+        top:0;
+        width: 95vw;
+        margin-left: 20px;
+        margin-top: 10px;
+       height:50px;
+       border-radius: 15px;
+       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .logout-button{
+        background-color:#3b82f6;
+        padding:10px;
+        color:#ffffff;
+        border-style:none;
+        border-radius:5px;
+        
+    }
+    .styling-icon{
+        height:25px;
+        width:25px;
+        margin-right: 10px;
+        margin-top: 5px;
+    }
+    .logout-container{
+        display: flex;
+        margin-top: 10px;
+        margin-right: 20px;
+    }
+    .header{
+        display: flex;
+        justify-content: space-between;
+        width: 70vw;
+    }
+    .styling-input{
+        border-style:solid;
+        outline: none;
+        cursor:pointer;
+        padding:3px;
+        margin-top: 20px;
+        width: 250px;
+    }
+}
+
