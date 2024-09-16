@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use(cors());
 
-<<<<<<< HEAD
+
 
 mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
   useNewUrlParser: true,
@@ -45,20 +45,51 @@ app.post('/stock', async (req, res, next) => {
   try {
 
 
-    const { med_id, imported_quantity, expery } = req.body;
-    console.log(req.body);
 
-    const date = new Date(expery);
-    const result = await Stock.create({ med_id, imported_quantity, left_quantity: imported_quantity, expery: date.toLocaleDateString() });
+    if (req.file != null) {
+      const workbook = xlsx.readFile(req.file.path, { cellDates: true });
 
-    const objectId = new mongoose.Types.ObjectId(med_id);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = xlsx.utils.sheet_to_json(worksheet);
+      fs.unlinkSync(req.file.path);
+    
+      const st_data=await Promise.all(
+        data.map(async (each)=>{
 
-    const med_data = await Medicine.findById(objectId);
-    const total_quantity = parseInt(imported_quantity, 10) + med_data.available;
-    console.log(total_quantity);
+          const med_data=await Medicine.findOne({name:each.med_id})
+          
 
-    const up_result = await Medicine.findByIdAndUpdate(objectId, { available: total_quantity }, { new: true });
-    res.json(up_result);
+          const total_quantity = parseInt(each.imported_quantity, 10) + med_data.available;
+    
+          const up_result = await Medicine.findByIdAndUpdate(med_data._id, { available: total_quantity }, { new: true });
+
+          return {...each,med_id:med_data._id,left_quantity:each.imported_quantity}
+
+
+        })
+      )
+
+      const response = await Stock.insertMany(st_data);
+      res.json(response);
+
+    }
+    else {
+      const { med_id, imported_quantity, expery } = req.body;
+      console.log(req.body);
+
+      const date = new Date(expery);
+      const result = await Stock.create({ med_id, imported_quantity, left_quantity: imported_quantity, expery: date.toLocaleDateString() });
+
+      const objectId = new mongoose.Types.ObjectId(med_id);
+
+      const med_data = await Medicine.findById(objectId);
+      const total_quantity = parseInt(imported_quantity, 10) + med_data.available;
+      console.log(total_quantity);
+
+      const up_result = await Medicine.findByIdAndUpdate(objectId, { available: total_quantity }, { new: true });
+      res.json(up_result);
+    }
 
   }
   catch (err) {
@@ -233,12 +264,13 @@ app.delete('/student', async (req, res, next) => {
 
   try {
 
-    const { batch,stu_id,flag } = req.query;
-    if (flag=='true') {
-      
-    const result= await Student.deleteOne({stu_id});
-   
-   res.json(result);
+    const { batch, stu_id, flag } = req.query;
+    if (flag == 'true') {
+
+      const result = await Student.deleteOne({ stu_id });
+      await Transactions.deleteMany({ stu_id });
+
+      res.json(result);
 
     }
     else {
@@ -247,11 +279,11 @@ app.delete('/student', async (req, res, next) => {
 
         const studentsToDelete = await Student.find({ stu_id: { $regex: new RegExp(`^.*${batch}.*$`, 'i') } });
         const studentIds = studentsToDelete.map(student => student._id);
-
-        // await Transaction.deleteMany({ studentId: { $in: studentIds } });
+        const stu_ro_ids = studentsToDelete.map(student => student.stu_id);
+        const trans_res = await Transactions.deleteMany({ stu_id: { $in: stu_ro_ids } });
 
         const stu_res = await Student.deleteMany({ _id: { $in: studentIds } });
-        res.json(stu_res);
+        res.json({ stu_res, trans_res });
       }
     }
   }
@@ -261,54 +293,52 @@ app.delete('/student', async (req, res, next) => {
 
 })
 
-app.post('/transaction',async (req,res,next)=>{
+app.post('/transaction', async (req, res, next) => {
 
-try{
+  try {
 
-const {stu_id,med_id,reason,quantity}=req.body;
+    const { stu_id, med_id, reason, quantity } = req.body;
 
-const result=await Transactions.create({stu_id,med_id,reason,quantity});
-res.json(result);
+    const result = await Transactions.create({ stu_id, med_id, reason, quantity });
+    res.json(result);
 
-}
-catch(err)
-{
+  }
+  catch (err) {
 
-next(err);
+    next(err);
 
-}
+  }
 
 
 })
 
 
-app.get('/transaction',async (req,res,next)=>{
+app.get('/transaction', async (req, res, next) => {
 
 
-try{
-  
-const {stu_id}=req.query;
+  try {
 
-const response=await Transactions.find({stu_id});
+    const { stu_id } = req.query;
 
-const data=await Promise.all( response.map(async (each)=>{
-  const objectId = new mongoose.Types.ObjectId(each.med_id);
-   const med_data=await Medicine.findById(objectId);
-   
-   return {...each,med_name:med_data.name};
+    const response = await Transactions.find({ stu_id });
+
+    const data = await Promise.all(response.map(async (each) => {
+      const objectId = new mongoose.Types.ObjectId(each.med_id);
+      const med_data = await Medicine.findById(objectId);
+
+      return { ...each, med_name: med_data.name };
 
 
-}))
+    }))
 
-console.log(data);
-const student=await Student.find({stu_id})
+    console.log(data);
+    const student = await Student.find({ stu_id })
 
-res.json({student,data});
-}
-catch(err)
-{
-  next(err);
-}
+    res.json({ student, data });
+  }
+  catch (err) {
+    next(err);
+  }
 
 
 })
@@ -320,12 +350,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   return res.status(500).json({ error: true });
 });
-=======
-  app.use((err, req, res, next) => {
-    console.error(err.stack);
-    return res.status(500).json({ error: true });
-  });
->>>>>>> 5a31ce4bdc91dc5a0c3457554fab1cd9b3457464
+
 
 
 app.listen(process.env.PORT, () => { console.log("server is running") });
