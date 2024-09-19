@@ -1,0 +1,18 @@
+
+.opt-down{
+    display: none;
+}
+.med-card{
+display: flex;
+
+
+}
+@media screen and (max-width:393px) {
+    .opt-down{
+        display: flex;
+    }
+    .med-card{
+        display: none;
+
+    }
+}

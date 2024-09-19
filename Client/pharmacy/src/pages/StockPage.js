@@ -1,16 +1,16 @@
-import Dashboard from "../Dashboard/Dashboard"
-import Header from "../Header/Header"
-import Sidebar from "../Sidebar/Sidebar"
-import './Home.css'
+import React from 'react';
 import { useContext } from "react"
-import Context from "../../context/Context"
-import { Spin } from "antd"
+import { Spin } from "antd";
+import Context from '../context/Context';
+import Header from '../components/Header/Header';
+import Sidebar from '../components/Sidebar/Sidebar';
+import Stock from '../components/Stock/Stock';
 
-const Home = () => {
+
+
+const StockPage = props => {
 
     const {loading,setLoading,success,error,contextHolder}=useContext(Context);
-
-
 
     return (
         <>
@@ -24,14 +24,16 @@ const Home = () => {
                     <Sidebar />
                 </div>
                 <div className="main-content">
-
-                   <Dashboard/>
+                    <Stock/>    
                 </div>
             </div>
 
         </div>
         </Spin>
         </>
-    )
-}
-export default Home
+    );
+};
+
+
+
+export default StockPage;

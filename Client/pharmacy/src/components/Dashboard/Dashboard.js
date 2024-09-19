@@ -1,15 +1,12 @@
-import Header from "../Header/Header"
-import Sidebar from "../Sidebar/Sidebar"
 
+import { Flex } from 'antd';
+import MedicineCard from '../Cards/MedicineCard';
 import './Dashboard.css'
 
 const Dashboard = () => {
     return (
-        <div className="dashboard-container">
-        <div className="dashboard-header-sidebar"><Header/>
-        <div className="sidebar-container"><Sidebar/></div>
-        </div>
-        
+        <div className="dashboard-container pt-3">
+               dashboard
         </div>
     );
 };

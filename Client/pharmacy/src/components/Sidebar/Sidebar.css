@@ -1,4 +1,4 @@
-@media screen and (min-width:10px){
+@media screen and (max-width:299px){
     .sidebar-container-md{
         display: none;
     }
@@ -6,9 +6,12 @@
     .sidebar-container-mobile{
         list-style-type: none;
         display: flex;
-        background-color: red;
-        padding-right: 30px;
+        background-color: white;
+        padding-right: 20px;
         box-sizing: border-box;
+        position: fixed;
+        bottom: -15px;
+        width: 100%;
         justify-content: space-between;
     }
     .icon-container-mobile{
@@ -16,28 +19,54 @@
         margin-bottom: 10px;
     }
     .icon-container-mobile svg{
-        width:40px;
-        height:40px;
-        color:#ffffff;
+        width:20px;
+        height:20px;
+        color:grey;
     }
     
     
     .active-tab-color{
-        background-color: blue;
+        background-color: #9e2021;
         border-radius: 8px;
         padding: 6px;
     }
 }
-@media screen and (min-width:577px){
+
+
+@media screen and (min-width:300px){
+    .sidebar-container-md{
+        display: none;
+    }
+  
     .sidebar-container-mobile{
         list-style-type: none;
         display: flex;
-        background-color: red;
+        background-color: white;
         padding-right: 30px;
         box-sizing: border-box;
-        justify-content: space-around;
+        position: fixed;
+        bottom: -15px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .icon-container-mobile{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .icon-container-mobile svg{
+        width:30px;
+        height:30px;
+        color:grey;
+    }
+    
+    
+    .active-tab-color{
+        background-color: #9e2021;
+        border-radius: 8px;
+        padding: 6px;
     }
 }
+
 
 @media screen and (min-width:768px){
     .unordered-list{
@@ -68,8 +97,8 @@
     .sidebar-icon-container{
         display: flex;
         align-items: center;
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 15px;
+        margin-bottom: 12px;
     }
     .sidebar-icon-container svg {
         width: 30px;
@@ -91,11 +120,11 @@
     }
     
     .sidebar-icon-container.active-tab-color:hover{
-        background-color: blue;
+        background-color: #9e2021;
         
     }
     .active-tab-color{
-        background-color: blue;
+        background-color: #9e2021;
         border-radius: 8px;
         padding: 10px;
         
@@ -126,7 +155,7 @@
         display: block;
     }
     .active-tab-color{
-        background-color: blue;
+        background-color: #9e2021;
         border-radius: 8px;
        padding: 0px;
         
@@ -158,4 +187,17 @@
     .sidebar-container-md{
         width: 180px;
     }
+}
+
+.active-tab-color p{
+    color: white;
+}
+.active-tab-color svg{
+    color: white;
+}
+.sidebar-container-md .Link{
+  text-decoration: none;
+}
+.sidebar-container-mobile{
+
 }

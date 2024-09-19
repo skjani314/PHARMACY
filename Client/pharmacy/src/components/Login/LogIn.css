@@ -1,0 +1,128 @@
+  
+  .fcontainer h1 {
+    font-size: 2em;
+    text-align: center;
+    padding: 30px;
+  }
+ .fcontainer input[type="radio"]{
+    width: 15px ;
+    height: 15px ;
+    background-color: white ;
+    border: 1px solid #9e2021 ;
+    border-radius: 50% ;
+}
+
+.fcontainer input[type="checkbox"] {
+  cursor: pointer;
+  padding: 2px !important;
+  width: 15px; 
+  height: 15px; 
+}
+
+  .fcontainer {
+    margin: 10px auto;
+    width: 450px;
+    max-width: 95%;
+    background-color: #f2f2f2;
+    border: solid 1px #d2d2d2;
+    box-shadow: 5px 5px 10px #d2d2d2;
+    padding-right: var(--bs-gutter-x, 0.75rem);
+    padding-left: var(--bs-gutter-x, 0.75rem);
+    margin-bottom: 10%;
+    margin-top: 30px;
+  }
+  form p{
+    color:red
+  }
+  .fcontainer:hover {
+    box-shadow: 5px 5px 5px #d2d2d2;
+  }
+ 
+
+  .log-in {
+    width: 48%;
+    height: 70px;
+    border: solid 2px #9e2021;
+    margin-top: -70px;
+    margin-left: 40%;
+  }
+  .log-in-header {
+    margin-top: 23px;
+    text-align: center;
+  }
+  
+  .fcontainer input {
+     width: 95%;     
+    padding: 12px;
+    border: solid 1px #9e2021;
+    margin-top: 10px;
+    font-family: inherit;
+    font-size: large;
+  }
+  .first-name, .last-name {
+    width: 49.4%;
+    margin-top: -5px;
+  }
+  .last-name {
+    margin-right: 0;
+  }
+  .fcontainer ::placeholder {
+    font-style: italic;
+  }
+  .email {
+    margin-top: -5px;
+  }
+ .fcontainer  button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 20px;
+    border: solid 2px #9e2021;
+    background-color: #9e2021;
+    color: #fff;
+    font-size: 1.4em;
+    text-transform: uppercase;
+  }
+ .fcontainer button:hover {
+    box-shadow: 5px 5px 10px #d2d2d2;
+    cursor: pointer;
+  }
+
+  #log-in-form {
+    display: block;
+  }
+  .password {
+    float: right;
+    font-style: italic;
+    margin-top: 9px
+  }
+  .password:hover {
+    font-weight: bold;
+    cursor: pointer;
+  }
+ .fcontainer :focus {
+    outline-color: orange;
+  }
+  .passicon
+  {
+font-size: 25px;
+position: absolute;
+top:25px;
+right: 25px;
+  }
+  #sign-up-submit
+  {
+
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+
+label{
+  font-size: large;
+}
+
+@media screen and (max-width:465px) {
+  .fcontainer input{
+    width: 90%;
+  }
+}

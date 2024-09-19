@@ -1,15 +1,18 @@
-@media screen and (max-width:767px){
-    .dashboard-header-sidebar{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 94vh;
-    }
-    
+
+.dashboard-container{
+
+    background-color: whitesmoke;
+    padding-bottom: 30%;
+
 }
 @media screen and (min-width:768px){
     .dashboard-container{
+        display: block;
+        min-height:80vh;
+        background-color: white;
+        padding: 10px;
+        padding-left: 0px;
         background-color: whitesmoke;
-        height:100vh;
+
     }
 }
