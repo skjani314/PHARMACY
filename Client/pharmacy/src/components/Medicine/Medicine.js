@@ -1,16 +1,21 @@
 import React from 'react';
-import { useContext } from "react"
+import { useContext,useEffect } from "react"
 import Context from "../../context/Context"
 import { Button, Card, Row,Flex } from 'antd';
 import { FaPlus, FaUpload } from 'react-icons/fa';
 import MedicineCard from '../Cards/MedicineCard';
+import {withRouter} from 'react-router-dom';
 
 const Medicine = props => {
-
-    const { loading, setLoading, success, error, contextHolder } = useContext(Context);
-
-
-
+   
+    const { loading, setLoading, success, error, contextHolder,changeActiveTab } = useContext(Context)
+ 
+    useEffect(()=>{
+       
+            changeActiveTab('MEDICINE');
+            
+    },[])
+   
     return (
         <>
             <div>
@@ -38,4 +43,4 @@ const Medicine = props => {
 };
 
 
-export default Medicine;
+export default withRouter(Medicine);
