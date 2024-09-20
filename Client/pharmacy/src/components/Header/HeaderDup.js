@@ -9,12 +9,12 @@ import { Spin,Input } from 'antd';
 import {withRouter} from 'react-router-dom'
 import { IoSearchSharp } from "react-icons/io5";
 import {useState} from 'react'
-import HeaderDup from './HeaderDup';
 
 const {Search}=Input;
 
 
 const Header = (props) => {
+    const {isSearchActive}=props;
     const [showSearch,setSearch]=useState(false);
     const {location}=props;
     const {pathname}=location;
@@ -30,10 +30,8 @@ const Header = (props) => {
         setSearch((prevState)=>(!prevState));
     }
     return (
-        <>
-        <HeaderDup isSearchActive={showSearch}/>
-        <div className='header-main-container'>
-        <div className='header-container' style={{zIndex:100}} >
+        <div className='header-main-container' style={{position:'static'}}>
+        <div className='header-container' style={{zIndex:-1}} >
                 <div>
                     <img src={logorgukt} className="styling-logo" alt="logo" />
                 </div>
@@ -46,12 +44,11 @@ const Header = (props) => {
                 <LogIn/>
                 </div>
         </div>
-        <div className={`search-container-bottom ${showSearch?'show-search':'remove-search'}`}>
-            <Search placeholder={placeHolder} allowClear  style={{width: 250,}} size="large"/>
+        <div className={`search-container-bottom ${isSearchActive?'show-search':'remove-search'}`}>
+            <Search placeholder={placeHolder} allowClear  style={{width: 200,}}/>
         </div>
         
         </div>
-        </>
     );
 };
 export default withRouter(Header);
