@@ -160,7 +160,7 @@ app.get('/stock', async (req, res, next) => {
 });
 
 
-app.post('/register', upload_file.single('img'), async (req, res, next) => {
+app.post('/register', async (req, res, next) => {
 
 
   try {
@@ -183,7 +183,7 @@ app.post('/register', upload_file.single('img'), async (req, res, next) => {
 
 });
 
-app.post('/medicine', upload_file.single('img'), async (req, res, next) => {
+app.post('/medicine', async (req, res, next) => {
 
 
   try {
@@ -213,8 +213,18 @@ app.get('/medicine', async (req, res, next) => {
     console.log(name);
 
     const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
+    const data=result.map((each)=>({
+      name:each.name,
+      available:each.available,
+      useage:each.useage,
+      img:{
+        data: each.img.data.toString('base64'),
+        contentType: each.img.contentType,
+      }
+    }))
+res.set('Content-Type', result[0].img.contentType);
 
-    res.json(result);
+    res.json(data);
   }
   catch (err) {
     next(err);

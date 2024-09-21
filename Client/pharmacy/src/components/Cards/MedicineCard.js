@@ -44,19 +44,17 @@ const MedicineCard = props => {
     const { Text, Link } = Typography;
 
 
-
-
-
     return (
         <div >
             <Card hoverable >
                 <Flex gap={card_gap} justify='space-between'>
                     <Flex gap={15} justify='space-around'>
-                        <Avatar shape="square" size={100} icon={<img src={data.imgurl} />} />
+                        <Avatar shape="square" size={100} icon={<img src={`data:${props.data.img.contentType};base64,${props.data.img.data}`}
+                        />} />
                         <Flex vertical justify='center'>
-                            <Text className='fs-3'> {data.name}</Text>
-                            <Text><b>Available:</b>{" " + data.available}</Text>
-                            <Text> <b>Useage:</b>{" " + data.useage}</Text>
+                            <Text className='fs-3'> {props.data.name}</Text>
+                            <Text><b>Available:</b>{" " + props.data.available}</Text>
+                            <Text> <b>Useage:</b>{" " + props.data.useage}</Text>
                         </Flex>
                     </Flex>
                         <Flex justify='center' vertical gap={10} className='med-card'>
