@@ -35,7 +35,7 @@ mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD +
   useUnifiedTopology: true,
 });
 
-app.use(upload_file.single('img'));
+app.use(upload_file.array('img'));
 
 
 app.post('/get-user', async (req, res, next) => {
@@ -190,12 +190,32 @@ app.post('/medicine', async (req, res, next) => {
 
     const { name, useage } = req.body;
 
-
-    await Medicine.create({ name, available: 0, useage, img: { data: fs.readFileSync(req.file.path), contentType: req.file.mimetype } })
+if(name && useage){
+    await Medicine.create({ name, available: 0, useage, img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
     console.log("medicine added");
     res.status(200).send("medicine added succesfully");
-    fs.unlinkSync(req.file.path);
+    fs.unlinkSync(req.files[0].path);
+  }
+else{
+  const workbook = xlsx.readFile(req.files[0].path);
 
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const data = xlsx.utils.sheet_to_json(worksheet);
+  let i=1;
+  data.forEach((each)=>{
+    each.available=0;
+    each.img={ data: fs.readFileSync(req.files[i].path), contentType: req.files[i].mimetype }
+    i++;
+  })
+
+const bulk_response=await Medicine.insertMany(data);
+console.log(bulk_response);
+for(i=0;i<req.files.length;i++){ fs.unlinkSync(req.files[i].path);
+}
+res.json(bulk_response);
+
+}
   }
   catch (err) {
     next(err);
@@ -220,7 +240,8 @@ app.get('/medicine', async (req, res, next) => {
       img:{
         data: each.img.data.toString('base64'),
         contentType: each.img.contentType,
-      }
+      },
+      id:each._id
     }))
 res.set('Content-Type', result[0].img.contentType);
 
@@ -239,11 +260,19 @@ app.delete('/medicine', async (req, res, next) => {
 
     const { id } = req.query;
     console.log(req.query)
-    const result = await Medicine.findByIdAndDelete(id);
+    const data=await Medicine.findOne({name:id});
+    console.log(data);
+    if(data.available===0){
+    const result = await Medicine.deleteOne({name:id});
+
     if (result) {
       res.status(200).json({ message: 'Record deleted successfully', data: result });
     } else {
       res.status(404).json({ message: 'Record not found' });
+    }
+  }
+    else{
+      next(new Error('Available should be 0'))
     }
   }
   catch (err) {
@@ -253,6 +282,18 @@ app.delete('/medicine', async (req, res, next) => {
 
 });
 
+
+app.put('/medicine',async (req,res,next)=>{
+
+const {useage,name}=req.body;
+
+await Medicine.findOneAndUpdate({name},{useage, img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
+console.log("medicine updated");
+res.status(200).send("medicine updated succesfully");
+fs.unlinkSync(req.files[0].path);
+
+
+})
 
 app.post('/student', async (req, res, next) => {
 

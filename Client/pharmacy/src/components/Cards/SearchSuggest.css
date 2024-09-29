@@ -1,0 +1,12 @@
+.search-suggestion{
+
+    background-color: white;
+    min-width: 250px;
+    
+}
+.search-suggestion :hover{
+    cursor: pointer;
+}
+.Link{
+    text-decoration: none;
+}

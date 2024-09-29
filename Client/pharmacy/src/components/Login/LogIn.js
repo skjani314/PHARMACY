@@ -113,7 +113,7 @@ const handleLogout=async ()=>{
 }
     <Modal 
       title="" 
-      visible={isVisible} 
+      open={isVisible} 
       onCancel={handleCancel}
       footer={[]}
     >

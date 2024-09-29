@@ -14,32 +14,32 @@ const sidebarItems=[
         id:"DASHBOARD",
         displayText:"Dashboard",
         icon:<MdDashboard />,
-        path:'dashboard'
+        path:'/dashboard'
     },
     {
         id:'MEDICINE',
         displayText:'Medicine',
         icon:<GiMedicines className="mb-2"/>,
-        path:'medicinepage',
+        path:'/medicinepage',
     },
     
     {
         id:"STOCK",
         displayText:'Stock',
         icon:<AiFillMedicineBox className="mb-2"/>,
-        path:'stockpage',
+        path:'/stockpage',
     },
     {
         id:"STUDENT",
         displayText:'Student',
         icon:<PiStudentBold className="mb-2"/>,
-        path:'studentpage',
+        path:'/studentpage',
     },
     {
         id:"TRANSACTIONS",
         displayText:'Transactions',
         icon:<GrTransaction className="mb-2"/>,
-        path:'transactionpage',
+        path:'/transactionpage',
     }
 ]
 

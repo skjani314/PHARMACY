@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './components/Home/Home';
 import Context from './context/Context';
-import {Switch,Route,BrowserRouter} from 'react-router-dom';
+import {Switch,Route,BrowserRouter } from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import {message} from 'antd';
 import Forgotpass from './components/Login/Forgotpass';
@@ -19,7 +19,8 @@ const App=()=> {
 const [activeTab,setActiveTab]=useState('DASHBOARD');
 const [user,setUser]=useState(null);
 const [loading,setLoading]=useState(false);
-
+const [Medicine_data, setMedData] = useState([]);
+const [search_result,setSerachResult]=useState([]);  
 
 const [messageApi, contextHolder] = message.useMessage();
 let flag=false;
@@ -52,10 +53,31 @@ useEffect(()=>{
       }
 
     }
+
+    const med_fun = async () => {
+      setLoading(true);
+      try {
+
+          const med_data = await axios.get('/medicine', { name:"" });
+          
+          setMedData([...med_data.data]);
+
+      }
+      catch (err) {
+          console.log(err);
+          error("something went wrong")
+      }
+      setLoading(false);
+
+  }
+
 if(!flag){
-getUser();}
+getUser();
+med_fun();
+}
 return ()=>{flag=true;}
 },[])
+
 
 
 const changeActiveTab=(tabId)=>{
@@ -71,7 +93,11 @@ const context_data={
     user,
     setUser,
     loading,
-    setLoading
+    setLoading,
+    Medicine_data,
+    setMedData,
+    search_result,
+    setSerachResult,
 
 }
 
