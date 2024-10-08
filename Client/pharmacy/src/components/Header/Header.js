@@ -5,7 +5,7 @@ import './Header.css'
 import LogIn from '../Login/LogIn';
 import { useContext } from "react"
 import Context from "../../context/Context"
-import { Spin, Input, Flex } from 'antd';
+import { Spin, Input, Flex ,Typography} from 'antd';
 import { withRouter } from 'react-router-dom'
 import { IoSearchSharp } from "react-icons/io5";
 import { useState } from 'react'
@@ -15,14 +15,14 @@ import axios from 'axios';
 import {useHistory} from 'react-router-dom';
 
 const { Search } = Input;
-
+const {Text}=Typography;
 
 const Header = (props) => {
     const [showSearch, setSearch] = useState(false);
     const { location } = props;
     const { pathname } = location;
-    const {search_value,setSearchValue}=props;  
-    const {    Medicine_data,search_result,setSerachResult, setMedSearchParam  }=useContext(Context);
+    const {search_value,setSearchValue,page}=props;  
+    const {    Medicine_data,search_result,setSerachResult,setLoading, setMedSearchParam ,error }=useContext(Context);
     const history=useHistory();
     let placeHolder = '';
     if (pathname === '/medicinepage' || pathname === '/medicinepage/') {
@@ -40,7 +40,7 @@ const Header = (props) => {
 
     const handleSearch = async (e) => {
         setSearchValue(e.target.value)
-       if(e.target.value!=""){
+       if(e.target.value!="" && !props.page){
         const result=Medicine_data.filter((each)=>(
             each.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
             each.useage.toLowerCase().includes(e.target.value.toLowerCase())
@@ -48,19 +48,44 @@ const Header = (props) => {
         )
         setSerachResult([...result]);
     }
+    else if(e.target.value!="" && props.page){
+             const result=await axios.get('/student?stu_id='+e.target.value);
+             setSerachResult([...result.data]);
+
+    }
     else{
         setSerachResult([]);
     }
     }
 
-const handleSearchSubmit=()=>
+const handleSearchSubmit=(value)=>
 {
+ if(!page){   
 history.push('/medicinepage?name='+search_value);
 setSerachResult([]);
 setSearchValue("");
-
+ }
+ else{
+if(value.trim()){
+error("select student ID");
+}
+ }
 }
 
+const handleSearchResultClick=async (value)=>{
+
+    setLoading(true);
+    setSerachResult([]);
+    setSearchValue("");
+    try{
+    const result=await axios.get('/transaction?stu_id='+value);
+    props.setSearachResult([...result.data.student,...result.data.response]);
+    }catch(err)
+    {
+        error("something went wrong");
+    }
+setLoading(false);
+}
 
 
 
@@ -87,7 +112,12 @@ setSearchValue("");
                             <div className='mt-2' style={{ position: 'fixed', top: '55px', background: 'whitesmoke', }}>
                                 {
                                     search_result.map((each)=>(
-                                        <SearchSuggest data={each} setSerachResult={setSerachResult}  setSearchValue={ setSearchValue}/>
+                                        !page?
+                                        <SearchSuggest key={each.id} data={each} setSerachResult={setSerachResult}  setSearchValue={ setSearchValue}/>
+                                        :<Flex vertical className='m-1 p-2 search-suggestion' style={{background:"white",width:"100%"}} onClick={()=>handleSearchResultClick(each.stu_id)}>
+                                        <Text>{each.stu_id}</Text>
+                                        <Text style={{fontSize:11}}>{each.name}</Text>
+                                        </Flex>
                                     ))
                                 }
 
@@ -111,7 +141,12 @@ setSearchValue("");
                         <div className='mt-2' style={{ position: 'fixed', top: '115px', background: 'whitesmoke', }}>
                         {
                                     search_result.map((each)=>(
-                                        <SearchSuggest data={each} setSerachResult={setSerachResult}   setSearchValue={ setSearchValue} />
+                                        !page?
+                                        <SearchSuggest key={each.id} data={each} setSerachResult={setSerachResult}   setSearchValue={ setSearchValue} />
+                                        :<Flex vertical className='m-1 p-2 search-suggestion' style={{background:"white",width:"100%"}} onClick={()=>handleSearchResultClick(each.stu_id)}>
+                                        <Text>{each.stu_id}</Text>
+                                        <Text style={{fontSize:11}}>{each.name}</Text>
+                                        </Flex>
                                     ))
                                 }
 

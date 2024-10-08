@@ -36,7 +36,7 @@ const MedicinePage = props => {
                     <Sidebar />
                 </div>
                 <div className="main-content">
-                  <Medicine param={searchParams.get('name')}  search_value={search_value}/>
+                  <Medicine param={searchParams.get('name')}/>
                 </div>
             </div>
 

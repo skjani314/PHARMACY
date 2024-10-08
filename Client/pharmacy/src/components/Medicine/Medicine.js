@@ -114,7 +114,7 @@ if(formdata.name && formdata.usage){
                         <Flex gap="small" justify='space-evenly' wrap>
                             {
                                 Med_dummy_data.map((each) => {
-                                    return <MedicineCard data={each} setData={setMedData} />
+                                    return <MedicineCard key={each.id} data={each} setData={setMedData} />
                                 })
                             }
                         </Flex> : null

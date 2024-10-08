@@ -57,7 +57,6 @@ const [usage,setUsage]=useState(null)
             const med_data = await axios.get('/medicine', { name: "" });
 
             props.setData([...med_data.data]);
-            props.search_result(false);
 
 
         }
@@ -74,6 +73,7 @@ const [usage,setUsage]=useState(null)
     }
 const handleEditUpload=async ()=>{
     setLoading(true);
+    if(usage){
     try{
     const form_Data = new FormData();
     console.log(fileList_card);
@@ -93,16 +93,19 @@ const handleEditUpload=async ()=>{
       const med_data = await axios.get('/medicine', { name: "" });
 
             props.setData([...med_data.data]);
-            props.search_result(false);
             setLoading(false);
 
     }
 catch(err)
 {
-error("something went wrong")
+error(err.message)
 setLoading(false);
 }
-
+    }
+    else{
+        error("fill required fields");
+        setLoading(false);
+    }
 }
 
     return (

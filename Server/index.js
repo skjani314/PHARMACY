@@ -14,6 +14,7 @@ import Stock from './modals/Stock.js';
 import Student from './modals/Student.js';
 import xlsx from 'xlsx';
 import Transactions from './modals/Transaction.js';
+import { promise } from 'bcrypt/promises.js';
 
 dotenv.config();
 const app = express();
@@ -80,15 +81,13 @@ app.post('/stock', async (req, res, next) => {
 
   try {
 
-
-
-    if (req.file != null) {
-      const workbook = xlsx.readFile(req.file.path, { cellDates: true });
+    if (req.files.length>0) {
+      const workbook = xlsx.readFile(req.files[0].path, { cellDates: true });
 
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(worksheet);
-      fs.unlinkSync(req.file.path);
+      fs.unlinkSync(req.files[0].path);
     
       const st_data=await Promise.all(
         data.map(async (each)=>{
@@ -97,10 +96,11 @@ app.post('/stock', async (req, res, next) => {
           
 
           const total_quantity = parseInt(each.imported_quantity, 10) + med_data.available;
+          console.log(total_quantity);
     
           const up_result = await Medicine.findByIdAndUpdate(med_data._id, { available: total_quantity }, { new: true });
 
-          return {...each,med_id:med_data._id,left_quantity:each.imported_quantity}
+          return {...each,left_quantity:each.imported_quantity}
 
 
         })
@@ -115,15 +115,15 @@ app.post('/stock', async (req, res, next) => {
       console.log(req.body);
 
       const date = new Date(expery);
+      date.setDate(date.getDate()+1);
       const result = await Stock.create({ med_id, imported_quantity, left_quantity: imported_quantity, expery: date.toLocaleDateString() });
 
-      const objectId = new mongoose.Types.ObjectId(med_id);
 
-      const med_data = await Medicine.findById(objectId);
+      const med_data = await Medicine.findOne({name:med_id});
       const total_quantity = parseInt(imported_quantity, 10) + med_data.available;
       console.log(total_quantity);
 
-      const up_result = await Medicine.findByIdAndUpdate(objectId, { available: total_quantity }, { new: true });
+      const up_result = await Medicine.findOneAndUpdate({name:med_id}, { available: total_quantity }, { new: true });
       res.json(up_result);
     }
 
@@ -140,7 +140,7 @@ app.get('/stock', async (req, res, next) => {
   try {
     const { med_id, start, end, flag } = req.query;
     if (flag == 'true') {
-      const result = await Stock.find({ med_id }).sort({ date: -1 });
+      const result = await Stock.find({ med_id }).sort({ date: 1 });
       res.json(result);
     }
     else {
@@ -287,10 +287,25 @@ app.put('/medicine',async (req,res,next)=>{
 
 const {useage,name}=req.body;
 
+if(req.files.length>0 && useage!=null){
 await Medicine.findOneAndUpdate({name},{useage, img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
+fs.unlinkSync(req.files[0].path);
+
+}
+else if(useage!=null){
+  await Medicine.findOneAndUpdate({name},{useage})
+
+}
+else if(req.files.length>0){
+  await Medicine.findOneAndUpdate({name},{ img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
+  fs.unlinkSync(req.files[0].path);
+
+}
+else{
+  next(new Error("no item to update"));
+}
 console.log("medicine updated");
 res.status(200).send("medicine updated succesfully");
-fs.unlinkSync(req.files[0].path);
 
 
 })
@@ -301,10 +316,10 @@ app.post('/student', async (req, res, next) => {
   try {
 
 
-    const file = req.file;
+    const files = req.files;
     const { stu_id, name, class_name, dorm } = req.body;
 
-    if (!file) {
+    if (files.length<=0) {
 
       if (stu_id) {
         const result = await Student.create({ stu_id, name, class_name, dorm });
@@ -314,12 +329,12 @@ app.post('/student', async (req, res, next) => {
         next(new Error("no file or data found to upload"));
       }
     } else {
-      const workbook = xlsx.readFile(file.path);
+      const workbook = xlsx.readFile(files[0].path);
 
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(worksheet);
-      fs.unlinkSync(file.path);
+      fs.unlinkSync(files[0].path);
       const response = await Student.insertMany(data);
       res.json(response);
     }
@@ -365,6 +380,8 @@ app.delete('/student', async (req, res, next) => {
       else {
 
         const studentsToDelete = await Student.find({ stu_id: { $regex: new RegExp(`^.*${batch}.*$`, 'i') } });
+        console.log(batch)
+
         const studentIds = studentsToDelete.map(student => student._id);
         const stu_ro_ids = studentsToDelete.map(student => student.stu_id);
         const trans_res = await Transactions.deleteMany({ stu_id: { $in: stu_ro_ids } });
@@ -385,11 +402,43 @@ app.post('/transaction', async (req, res, next) => {
   try {
 
     const { stu_id, med_id, reason, quantity } = req.body;
+    const med_data=await Medicine.findOne({name:med_id});
+    const left=med_data.available-quantity;
+
+    if(left<0)next(new Error("unable to process request"));
+    const up_result = await Medicine.findOneAndUpdate({name:med_id}, { available: left }, { new: true });
+
+
+    const transactions=await Stock.find({med_id}).sort({expery:1});
+    
+  let x=quantity;
+  let temp=0;
+  console.log(transactions);
+console.log(x);
+    for(let i=0;i<transactions.length && x>0;i++)
+      {
+        if(transactions[i].left_quantity>0){
+        
+            temp=transactions[i].left_quantity-x;
+            if(temp>=0){
+             const up_res= await Stock.findByIdAndUpdate({_id:transactions[i]._id}, { left_quantity: temp }, { new: true });
+            
+             x=0;
+            }
+            else{
+             const up_res= await Stock.findByIdAndUpdate(transactions[i]._id, { left_quantity: 0 }, { new: true });
+             x=x-transactions[i].left_quantity;
+            }
+          }
+
+      }
+
 
     const result = await Transactions.create({ stu_id, med_id, reason, quantity });
     res.json(result);
+   
 
-  }
+  } 
   catch (err) {
 
     next(err);
@@ -405,23 +454,43 @@ app.get('/transaction', async (req, res, next) => {
 
   try {
 
-    const { stu_id } = req.query;
+    const { stu_id,end,start } = req.query;
 
-    const response = await Transactions.find({ stu_id });
+    if(stu_id!=null){
+    const response = await Transactions.find({ stu_id }).sort({date:-1});
 
-    const data = await Promise.all(response.map(async (each) => {
-      const objectId = new mongoose.Types.ObjectId(each.med_id);
-      const med_data = await Medicine.findById(objectId);
-
-      return { ...each, med_name: med_data.name };
-
-
-    }))
-
-    console.log(data);
+   
     const student = await Student.find({ stu_id })
 
-    res.json({ student, data });
+    res.json({ student, response });
+    }
+    else if(start!=null){
+      
+      const startDate = new Date(start);
+      const endDate = new Date(end + 'T23:59:59.999Z');
+      const response = await Transactions.find({ date: { $gte: startDate, $lte: endDate } }).sort({ date: 1 })
+      const result=await Promise.all(
+        response.map(async (each)=>{
+          const stu_data=await Student.findOne({stu_id:each.stu_id});
+          return {...each,name:stu_data.name}
+        })
+      )
+      res.json(result);
+
+     }
+    else{
+      const response=await Transactions.find({stu_id:{ $regex: new RegExp("", 'i') }}).sort({date:-1}).limit(30);
+
+      const result=await Promise.all(
+        response.map(async (each)=>{
+          const stu_data=await Student.findOne({stu_id:each.stu_id});
+          return {...each,name:stu_data.name}
+        })
+      )
+      res.json(result);
+
+
+    }
   }
   catch (err) {
     next(err);
