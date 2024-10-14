@@ -71,7 +71,7 @@ const Transaction = props => {
         form_Data.append('med_id', formdata.med_id);
         try {
 
-            const result = axios.post('/transaction', form_Data, { withCredentials: true });
+            const result =await axios.post('/transaction', form_Data, { withCredentials: true });
             console.log(result);
             success("Medicine Issued Succesfully");
 

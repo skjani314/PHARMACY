@@ -143,12 +143,18 @@ app.get('/stock', async (req, res, next) => {
       const result = await Stock.find({ med_id }).sort({ date: 1 });
       res.json(result);
     }
-    else {
+    else if(start!=null){
       const startDate = new Date(start);
       const endDate = new Date(end + 'T23:59:59.999Z');
       console.log(endDate);
-      const result = await Stock.find({ date: { $gte: startDate, $lte: endDate } }).sort({ date: -1 })
+      const result = await Stock.find({ date: { $gte: startDate, $lte: endDate } }).sort({ date: 1 })
       res.json(result);
+    }
+    else{
+      const result=await Stock.find({med_id:{ $regex: new RegExp("", 'i') }}).sort({date:-1}).limit(30);
+      res.json(result);
+      console.log(result)
+
     }
 
 
@@ -233,6 +239,7 @@ app.get('/medicine', async (req, res, next) => {
     console.log(name);
 
     const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
+
     const data=result.map((each)=>({
       name:each.name,
       available:each.available,
@@ -243,7 +250,8 @@ app.get('/medicine', async (req, res, next) => {
       },
       id:each._id
     }))
-res.set('Content-Type', result[0].img.contentType);
+    if(result.length>0){
+res.set('Content-Type', result[0].img.contentType);}
 
     res.json(data);
   }
@@ -309,6 +317,8 @@ res.status(200).send("medicine updated succesfully");
 
 
 })
+
+
 
 app.post('/student', async (req, res, next) => {
 

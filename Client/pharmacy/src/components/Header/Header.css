@@ -17,7 +17,7 @@
     .header-main-container{
         background-color: #ffffff;
         min-height: 70px; 
-        width: 98vw;
+        width: 100%;
         position: fixed;
         top: 0px;
     }
@@ -95,7 +95,7 @@
     .header-main-container{
         background-color: #ffffff;
         min-height: 70px; 
-        width: 98vw;
+        width: 100%;
         position: fixed;
         top: 0px;
     }

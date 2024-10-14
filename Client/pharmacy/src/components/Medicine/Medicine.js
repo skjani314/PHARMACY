@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext, useEffect,useState } from "react"
 import Context from "../../context/Context"
-import { Button, Row, Flex, Modal, Upload, Spin } from 'antd';
+import { Button, Row, Flex, Modal, Upload, Spin,Card } from 'antd';
 import { FaPlus, FaUpload } from 'react-icons/fa';
 import MedicineCard from '../Cards/MedicineCard';
 import axios from 'axios';
@@ -48,7 +48,7 @@ const Medicine = props => {
 
 
 
-if(formdata.name && formdata.usage){
+if((formdata.name && formdata.usage) || med_form.bulk){
 
 
         setLoading(true);
@@ -101,7 +101,7 @@ if(formdata.name && formdata.usage){
 
     return (
         <>
-            <div>
+            <Card style={{width:"100%",minWidth:400,background:'whitesmoke'}}>
                 <h1 className='p-3'>Medicines</h1>
                 <Flex gap={10} justify='end' className='mb-2' wrap>
                     <Button className='m' onClick={() => { setMedForm((prev) => ({ ...prev, single: true })) }} ><FaPlus /> Add Medicine</Button>
@@ -111,7 +111,7 @@ if(formdata.name && formdata.usage){
                 <h3 className='p-2'>{!props.param?"Recent Medicines":"search result for "+props.param }</h3><br></br>
                 <Row>
                     {!loading ?
-                        <Flex gap="small" justify='space-evenly' wrap>
+                        <Flex gap="small" justify='space-evenly'  wrap>
                             {
                                 Med_dummy_data.map((each) => {
                                     return <MedicineCard key={each.id} data={each} setData={setMedData} />
@@ -167,7 +167,7 @@ if(formdata.name && formdata.usage){
                 </Modal>
 
 
-            </div>
+            </Card>
         </>
     );
 };

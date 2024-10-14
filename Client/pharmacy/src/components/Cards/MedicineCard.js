@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import axios from 'axios';
 import Context from '../../context/Context';
 import TextField from '@mui/material/TextField';
+import Title from 'antd/es/skeleton/Title';
 
 
 
@@ -29,22 +30,30 @@ const [usage,setUsage]=useState(null)
         setFileListCard(fileList);
     };
     let card_gap = 50;
-
+    let card_width=500;
+    let card_height=200;
     if (isLargeScreen) {
         card_gap = 50;
+        card_width=500;
+        card_height=200
     }
     else if (isMediumScreen) {
-        card_gap = 200
+        card_gap = 150
+        card_width=600;
+
     }
     else if (isSmallScreen) {
         card_gap = 30;
+        card_width=400
+        card_height=220
+
     }
     else {
         card_gap = 120;
     }
 
 
-    const { Text, Link } = Typography;
+    const { Text, Title } = Typography;
 
     const handleDelete = async () => {
         setLoading(true);
@@ -112,15 +121,15 @@ setLoading(false);
         <>
         <div >
             {!props.loading ?
-                <Card hoverable >
-                    <Flex gap={card_gap} justify='space-between'>
-                        <Flex gap={15} justify='space-around'>
-                            <Avatar shape="square" size={100} icon={<img src={`data:${props.data.img.contentType};base64,${props.data.img.data}`}
+                <Card hoverable  style={{height:card_height,width:card_width}}  >
+                    <Flex gap={card_gap} justify='space-between' >
+                        <Flex gap={15} justify='space-around' >
+                            <Avatar shape="square" size={130} icon={<img src={`data:${props.data.img.contentType};base64,${props.data.img.data}`}
                             />} />
-                            <Flex vertical justify='center'>
-                                <Text className='fs-3'> {props.data.name}</Text>
+                            <Flex vertical justify='center' style={{maxWidth:200}}>
+                                <Title level={3}> {props.data.name}</Title>
                                 <Text><b>Available:</b>{" " + props.data.available}</Text>
-                                <Text> <b>Usage:</b>{" " + props.data.useage}</Text>
+                                <Text style={{overflowY:"hidden"}}> <b>Usage:</b>{" " + props.data.useage}</Text>
                             </Flex>
                         </Flex>
                         <Flex justify='center' vertical gap={10} className='med-card'>

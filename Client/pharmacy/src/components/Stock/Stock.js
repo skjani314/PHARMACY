@@ -33,7 +33,7 @@ const Stock = props => {
 
                 const start = new Date();
                 start.setDate(start.getDate() - 5);
-                const result = await axios.get('/stock?flag=false&start=' + start.toISOString().split('T')[0] + '&end=' + today.toISOString().split('T')[0]);
+                const result = await axios.get('/stock');
                 //  console.log(result);
                 setRows(prev => ([...prev, ...result.data]));
             } catch (err) {
