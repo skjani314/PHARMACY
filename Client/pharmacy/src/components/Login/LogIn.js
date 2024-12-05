@@ -108,7 +108,7 @@ const handleLogout=async ()=>{
    Sign in
     </AntButton>
     :<>
-   <FaUser size={14} className="styling-icon"/>
+   <Link className='Link' style={{color:'black'}} to="/dashboard"><FaUser size={14} className="styling-icon"/></Link>
     <AntButton type='primary'  onClick={handleLogout}>
      <Link className="Link" to="/">Log Out</Link> 
     </AntButton>

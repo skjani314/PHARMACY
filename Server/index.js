@@ -252,7 +252,7 @@ app.get('/medicine', async (req, res, next) => {
     }))
     if(result.length>0){
 res.set('Content-Type', result[0].img.contentType);}
-
+console.log(data);
     res.json(data);
   }
   catch (err) {

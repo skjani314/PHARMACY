@@ -7,7 +7,6 @@ import sucimg from './passchange.png'
 import Context from '../../context/Context';
 import './LogIn.css'
 const Forgotpass = props => {
-console.log('hi')
 const [FormData,setFormData]=useState({password:'',cpassword:''});
 const [psicon,setPsicon]=useState(false);
 const [ValData,setValData]=useState({password:true,cpassword:true});
