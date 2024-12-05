@@ -5,6 +5,8 @@ import React, {  useState,useContext } from 'react';
 import './LogIn.css';
 import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import Context from '../../context/Context';
+import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 function LogIn() {
 const [isVisible, setIsVisible] = useState(false);  
@@ -12,7 +14,7 @@ const [LogData,setLogdata]=useState({email:'',password:''});
 const [psicon,setPsicon]=useState(false);
 const [forgetpass,setForgetPass]=useState({email:'',flag:false});
 const {loading,setLoading,success,error,contextHolder,user,setUser}=useContext(Context);
-
+const history=useHistory();
 
 const showModal = () => {
   
@@ -68,6 +70,7 @@ const handleLogData=(e)=>
         setUser(result.data);
         setLoading(false);
         success("Logged In successfully");
+history.push('/dashboard')
 
        }catch(err)
        {
@@ -107,7 +110,7 @@ const handleLogout=async ()=>{
     :<>
    <FaUser size={14} className="styling-icon"/>
     <AntButton type='primary'  onClick={handleLogout}>
-      Log Out
+     <Link className="Link" to="/">Log Out</Link> 
     </AntButton>
     </>
 }

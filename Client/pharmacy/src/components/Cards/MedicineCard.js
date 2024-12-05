@@ -14,7 +14,7 @@ const { useBreakpoint } = Grid;
 
 const MedicineCard = props => {
 
-    const { loading, setLoading, success, error, contextHolder, changeActiveTab } = useContext(Context);
+    const { loading, setLoading, success, error, contextHolder, changeActiveTab ,user} = useContext(Context);
 
     const screens = useBreakpoint();
 
@@ -132,16 +132,20 @@ setLoading(false);
                                 <Text style={{overflowY:"hidden"}}> <b>Usage:</b>{" " + props.data.useage}</Text>
                             </Flex>
                         </Flex>
+                        {user?
                         <Flex justify='center' vertical gap={10} className='med-card'>
                             <Button className='bg-warning' style={{ color: 'black' }} onClick={handleEdit}><FaEdit />Edit</Button>
                             <Button className='bg-danger' style={{ color: 'white' }} onClick={handleDelete}><FaTrash />Delete</Button>
                         </Flex>
+                        :null
+                        }
                     </Flex>
-
+                      {user?
                     <Flex justify='space-around' gap={10} className='mt-3 opt-down'>
                         <Button className='bg-warning' onClick={handleEdit}><FaEdit />Edit</Button>
                         <Button className='bg-danger' onClick={handleDelete}><FaTrash />Delete</Button>
-                    </Flex>
+                    </Flex>:null
+                    }
 
                 </Card>
                 : null

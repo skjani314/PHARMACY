@@ -516,6 +516,7 @@ app.post('/login', async (req, res, next) => {
 
 
     const user = await User.findOne({ email });
+    console.log(user)
 
     if (!user) {
       next(new Error("User Not Found"));
