@@ -736,14 +736,26 @@ const overallPercentage = (totalLeft / totalImported) * 100;
 data.stock=overallPercentage;
 
 const lowStockMedicines = await Medicine.find({ available: { $lt: 50 } });
-data.shortage_list=lowStockMedicines;
 const currentDate = new Date();
 const oneWeekLater = new Date(currentDate);
 oneWeekLater.setDate(currentDate.getDate() + 7);
 const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater } });
 data.expiring_list=expiringMedicines;
 
-res.set('Content-Type', lowStockMedicines[0].img.contentType);
+
+const low_med_data=lowStockMedicines.map((each)=>({
+  name:each.name,
+  available:each.available,
+  img:{
+    data: each.img.data.toString('base64'),
+    contentType: each.img.contentType,
+  },
+  id:each._id
+}))
+if(lowStockMedicines.length>0){
+res.set('Content-Type', lowStockMedicines[0].img.contentType);}
+
+data.shortage_list=low_med_data;
 
 res.json(data);
 

@@ -16,7 +16,6 @@ const data=props.data.map((each)=>{
 
 
 
-console.log(data);
 
 
 

@@ -2,11 +2,44 @@ import { useEffect, useContext, useState } from 'react';
 import Context from '../../context/Context';
 import React from 'react';
 import { Modal, Flex, Button, Typography ,DatePicker} from 'antd';
-import { FaPlus } from 'react-icons/fa';
+import { FaDownload, FaPlus } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import SearchSuggest from '../Cards/SearchSuggest';
 import RecentTransactionsTable from '../Tables/RecentTransactionsTable';
+
+import * as XLSX from 'xlsx';
+
+const downloadExcel = (jsonData, filename) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    const data=jsonData.map(each=>{
+        const {name,_doc}=each;
+        const {date,med_id,quantity,reason,stu_id}=_doc;
+
+        return {Date:date,ID:stu_id,name,medicine:med_id,quantity,reason}
+    })
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    workbook.Sheets['Sheet1'] = worksheet;
+    workbook.SheetNames[0]='Sheet1';
+console.log(workbook)
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading Excel file:', error);
+  }
+};
+
 
 const { Text } = Typography;
 const Transaction = props => {
@@ -41,7 +74,6 @@ const Transaction = props => {
         recenttransactions();
 
     }, [])
-
 
     const handleSearch = async (e) => {
         setFormData((prev) => ({ ...prev, med_id: e.target.value }))
@@ -126,7 +158,8 @@ const Transaction = props => {
             <h1>Transactions</h1>
 
             <Flex gap={10} justify='end' className='mb-2' wrap>
-                <Button className='m' onClick={() => { setTransactionForm(true) }} ><FaPlus /> Add Transaction</Button>
+                <Button  onClick={() => { setTransactionForm(true) }} ><FaPlus /> Add Transaction</Button>
+                <Button onClick={()=>{ downloadExcel(tabledata, 'Transactions.xlsx');}} ><FaDownload/> Download</Button>
             </Flex>
             <h1>Recent Transactions</h1>
             <Flex gap={10} justify='end' className='mb-2' wrap>
