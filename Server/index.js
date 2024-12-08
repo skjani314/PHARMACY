@@ -25,7 +25,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000','https://pharmacy-psi-bice.vercel.app/'],
+    methods:["POST","GET","PUT"],
     credentials: true,
   }))
 
@@ -807,3 +808,5 @@ app.use((err, req, res, next) => {
 
 
 app.listen(process.env.PORT, () => { console.log("server is running") });
+
+module.exports = app;
