@@ -41,6 +41,10 @@ mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD +
 app.use(upload_file.array('img'));
 
 
+app.get('/',async (req,res)=>{
+  res.json("APP is working")
+})
+
 app.post('/get-user', async (req, res, next) => {
 
 
