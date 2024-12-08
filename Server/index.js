@@ -15,6 +15,7 @@ import Student from './modals/Student.js';
 import xlsx from 'xlsx';
 import Transactions from './modals/Transaction.js';
 import { promise } from 'bcrypt/promises.js';
+import { scheduleJob } from 'node-schedule';
 
 dotenv.config();
 const app = express();
@@ -675,6 +676,115 @@ app.post('/passchange', async (req, res, next) => {
  
  })
  
+app.get('/dashboarddata',async (req,res,next)=>{
+
+
+try{
+
+
+const data={total_students:0,benfited_students:0,stock:0,graph_data:[],shortage_list:[],expiring_list:[]}
+
+
+
+const benfited_stu=await Transactions.aggregate([
+  {
+      $group: {
+          _id: "$stu_id",
+          count: { $sum: 1 }
+      }
+  },
+  {
+      $match: {
+          count: { $gte: 1 }
+      }
+  }
+]);
+data.benfited_students=benfited_stu.length;
+const total_stu=await Student.find()
+data.total_students=total_stu.length
+
+
+const graph_data=await Transactions.aggregate([
+  {
+      $match: {
+          date: {
+              $gte: new Date(new Date().getFullYear() - 1, 0, 1), // Start of last year
+              $lt: new Date() // Current date
+          }
+      }
+  },
+  {
+      $group: {
+          _id: {
+              $month: "$date" // Group by month
+          },
+          count: { $sum: 1 },
+          totalQuantity: { $sum: "$quantity" }
+      }
+  }
+])
+data.graph_data=graph_data;
+const allStock = await Stock.find();
+let totalImported = 0;
+let totalLeft = 0;
+
+allStock.forEach(stockItem => {
+    totalImported += stockItem.imported_quantity;
+    totalLeft += stockItem.left_quantity;
+});
+const overallPercentage = (totalLeft / totalImported) * 100;
+data.stock=overallPercentage;
+
+const lowStockMedicines = await Medicine.find({ available: { $lt: 50 } });
+data.shortage_list=lowStockMedicines;
+const currentDate = new Date();
+const oneWeekLater = new Date(currentDate);
+oneWeekLater.setDate(currentDate.getDate() + 7);
+const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater } });
+data.expiring_list=expiringMedicines;
+
+res.set('Content-Type', lowStockMedicines[0].img.contentType);
+
+res.json(data);
+
+
+}
+catch(err)
+{
+  next(err);
+}
+
+
+
+
+})
+
+
+
+
+async function updateMedicineStock() {
+  const currentDate = new Date();
+
+  try {
+      const expiredMedicines = await Stock.find({ expery: { $lt: currentDate } });
+
+      for (const expiredMedicine of expiredMedicines) {
+          const medicine = await Medicine.findOne({ _id: expiredMedicine.med_id });
+          if (medicine) {
+              medicine.available -= expiredMedicine.left_quantity;
+              await medicine.save();
+          }
+      }
+  } catch (error) {
+      console.error('Error updating medicine stock:', error);
+  }
+}
+
+
+
+const job = scheduleJob('0 0 * * *', () => {
+  updateMedicineStock();
+});
 
 
 app.use((err, req, res, next) => {

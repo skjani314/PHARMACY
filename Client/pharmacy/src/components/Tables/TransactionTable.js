@@ -19,8 +19,8 @@ const  TransactionTable=(props)=>{
           <TableRow>
             <TableCell>Date</TableCell>
             <TableCell align="left">name</TableCell>
-            <TableCell align="left">imported_quantity</TableCell>
-            <TableCell align="left">left_quantity</TableCell>
+            <TableCell align="center">imported_quantity</TableCell>
+            <TableCell align="center">left_quantity</TableCell>
             <TableCell align="left">expery</TableCell>
           </TableRow>
         </TableHead>

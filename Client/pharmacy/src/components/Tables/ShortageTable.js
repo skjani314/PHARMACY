@@ -13,21 +13,22 @@ const { Text } = Typography;
 
 const ShortageTable = props => {
 
+console.log(props.rowsdata)
 
     return (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: props.dashboard?"100%":650 }} size="small" aria-label="a dense table">
+        <TableContainer component={Paper} >
+          <Table sx={{ minWidth:"100%"}} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
               <TableCell >Image</TableCell>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Available</TableCell>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Available</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.rowsdata.map((row) => (
+              {props.rowsdata.map((row,index) => (
                 <TableRow
-                  key={row._id}
+                  key={index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   
