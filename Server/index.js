@@ -43,17 +43,23 @@ app.use(cookieParser());
 
 app.use(cors({
     origin: ['http://localhost:3000','https://pharmacy-psi-bice.vercel.app/'],
-    methods:["POST","GET","PUT"],
+    methods:["POST","GET","PUT","DELETE"],
     credentials: true,
   }))
 
 
+try{
 
-
-mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
+mongoose.connect('mongodb+srv://pharmacyrgukt:' + 'kivsz3X0xwbs2zVW' + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+}
+catch(err)
+{
+  console.log(err)
+}
+
 
 app.use(upload_file.array('img'));
 
