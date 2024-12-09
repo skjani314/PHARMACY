@@ -63,8 +63,7 @@ const App = () => {
             'Content-Type': 'application/json'
           }
         });
-         const x=await med_data.json();
-         console.log(x);
+        
         setMedData([...med_data.data]);
         console.log(med_data);
       }
