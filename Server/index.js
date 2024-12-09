@@ -42,8 +42,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: ['http://localhost:3000','https://pharmacy-psi-bice.vercel.app/'],
-    methods:["POST","GET","PUT"],
+    origin: 'https://pharmacy-pamin4t15-shaik-mahammad-janis-projects.vercel.app/',
+    methods:["POST","GET","PUT","DELETE"],
     credentials: true,
   }))
 
