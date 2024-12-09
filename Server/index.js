@@ -42,9 +42,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: 'https://pharmacy-bnufl4umw-shaik-mahammad-janis-projects.vercel.app/',
+    origin: '*',
     methods:["POST","GET","PUT","DELETE"],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+
   }))
 
   app.use((req, res, next) => {
