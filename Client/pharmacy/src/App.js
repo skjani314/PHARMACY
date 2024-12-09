@@ -42,11 +42,13 @@ const App = () => {
     const getUser = async () => {
       try {
 
-        const result = await axios.post('/get-user');
+        const result = await axios.post('https://pharmacy-production-6114.up.railway.app/get-user');
+        console.log(result);
         setUser(result.data);
         flag = true;
       }
       catch (err) {
+        console.log(err)
         return null;
       }
 
