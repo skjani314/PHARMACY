@@ -48,12 +48,19 @@ app.use(cors({
   }))
 
 
+try{
 
-
-mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
+mongoose.connect('mongodb+srv://pharmacyrgukt:' + 'kivsz3X0xwbs2zVW' + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+console.log("mongodb connected");
+}
+catch(err)
+{
+  console.log(err)
+}
+
 
 app.use(upload_file.array('img'));
 
