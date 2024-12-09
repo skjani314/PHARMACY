@@ -116,6 +116,7 @@ setLoading(false);
         setLoading(false);
     }
 }
+console.log(props.data);
 
     return (
         <>
@@ -124,7 +125,7 @@ setLoading(false);
                 <Card hoverable  style={{height:card_height,width:card_width}}  >
                     <Flex gap={card_gap} justify='space-between' >
                         <Flex gap={15} justify='space-around' >
-                            <Avatar shape="square" size={130} icon={<img src={`data:${props.data.img?props.data.img.contentType:null};base64,${props.data.img.data}`}
+                            <Avatar shape="square" size={130} icon={<img src={`data:${props.data.img?props.data.img.contentType:null};base64,${props.data.img?props.data.img.data:null}`}
                             />} />
                             <Flex vertical justify='center' style={{maxWidth:200}}>
                                 <Title level={3}> {props.data.name}</Title>

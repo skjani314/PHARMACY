@@ -61,7 +61,7 @@ useEffect(()=>{
           const med_data = await axios.get('/medicine', { name:"" });
           
           setMedData([...med_data.data]);
-            console.log(med_data.data);
+            console.log(med_data);
       }
       catch (err) {
           console.log(err);
