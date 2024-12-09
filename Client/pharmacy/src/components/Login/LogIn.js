@@ -62,11 +62,11 @@ const handleLogData=(e)=>
       setLoading(true);
        try{
         
-       await axios.post('https://pharmacy-bnufl4umw-shaik-mahammad-janis-projects.vercel.app/login',LogData, { withCredentials: true })
+       await axios.post('https://pharmacy-production-6114.up.railway.app/login',LogData, { withCredentials: true })
     
         setLogdata({email:'',password:''});
         handleCancel();
-        const result= await axios.post('/get-user');
+        const result= await axios.post('https://pharmacy-production-6114.up.railway.app/get-user');
         setUser(result.data);
         setLoading(false);
         success("Logged In successfully");
