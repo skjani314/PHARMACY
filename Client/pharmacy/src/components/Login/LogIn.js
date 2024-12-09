@@ -62,7 +62,7 @@ const handleLogData=(e)=>
       setLoading(true);
        try{
         
-       await axios.post('/login',LogData, { withCredentials: true })
+       await axios.post('https://pharmacy-bnufl4umw-shaik-mahammad-janis-projects.vercel.app/login',LogData, { withCredentials: true })
     
         setLogdata({email:'',password:''});
         handleCancel();
