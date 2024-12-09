@@ -14,29 +14,29 @@ const  TransactionTable=(props)=>{
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: props.dashboard?"100%":650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell align="right">name</TableCell>
-            <TableCell align="right">imported_quantity</TableCell>
-            <TableCell align="right">left_quantity</TableCell>
-            <TableCell align="right">expery</TableCell>
+            <TableCell align="left">name</TableCell>
+            <TableCell align="center">imported_quantity</TableCell>
+            <TableCell align="center">left_quantity</TableCell>
+            <TableCell align="left">expery</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.rowsData.map((row) => (
+          {props.rowsData.map((row,index) => (
             <TableRow
-              key={row._id}
+              key={index}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
                 {row.date.split('T')[0]}
               </TableCell>
-              <TableCell align="right">{row.med_id}</TableCell>
-              <TableCell align="right">{row.imported_quantity}</TableCell>
-              <TableCell align="right">{row.left_quantity}</TableCell>
-              <TableCell align="right">{row.expery.split('T')[0]}</TableCell>
+              <TableCell align="left">{row.med_id}</TableCell>
+              <TableCell align="center">{row.imported_quantity}</TableCell>
+              <TableCell align="center">{row.left_quantity}</TableCell>
+              <TableCell align="left">{row.expery.split('T')[0]}</TableCell>
             </TableRow>
           ))}
         </TableBody>

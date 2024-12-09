@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 
 const Medicine = props => {
 
-    const { loading, setLoading, success, error, contextHolder, changeActiveTab ,Medicine_data,setMedData} = useContext(Context);
+    const { loading, setLoading, success, error, contextHolder, changeActiveTab ,Medicine_data,setMedData,user} = useContext(Context);
 
     const [med_form, setMedForm] = useState({ bulk: false, single: false });
     const [fileList, setFileList] = useState([]);
@@ -103,10 +103,12 @@ if((formdata.name && formdata.usage) || med_form.bulk){
         <>
             <Card style={{width:"100%",minWidth:400,background:'whitesmoke'}}>
                 <h1 className='p-3'>Medicines</h1>
+                {user?
                 <Flex gap={10} justify='end' className='mb-2' wrap>
                     <Button className='m' onClick={() => { setMedForm((prev) => ({ ...prev, single: true })) }} ><FaPlus /> Add Medicine</Button>
                     <Button className='m' onClick={() => { setMedForm((prev) => ({ ...prev, bulk: true })) }}><FaUpload /> Upload</Button>
-                </Flex>
+                </Flex>:null
+}
                 <>
                 <h3 className='p-2'>{!props.param?"Recent Medicines":"search result for "+props.param }</h3><br></br>
                 <Row>

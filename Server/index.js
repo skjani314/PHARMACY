@@ -15,16 +15,35 @@ import Student from './modals/Student.js';
 import xlsx from 'xlsx';
 import Transactions from './modals/Transaction.js';
 import { promise } from 'bcrypt/promises.js';
+import { scheduleJob } from 'node-schedule';
+import path from 'path';
 
 dotenv.config();
 const app = express();
-const upload_file = multer({ dest: 'uploads/' });
+
+
+const storage=multer.diskStorage({
+  destination:(req,file,cb)=>{
+    cb(null,'/tmp/');
+  },
+  filename:(req,file,cb)=>{
+    cb(null,Date.now()+path.extname(file.originalname));
+  }
+
+});
+
+
+
+const upload_file = multer({storage});
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000','https://pharmacy-psi-bice.vercel.app/'],
+    methods:["POST","GET","PUT"],
     credentials: true,
   }))
 
@@ -38,6 +57,10 @@ mongoose.connect('mongodb+srv://pharmacyrgukt:' + process.env.MONGODB_PASSWORD +
 
 app.use(upload_file.array('img'));
 
+
+app.get('/',async (req,res)=>{
+  res.json("APP is working")
+})
 
 app.post('/get-user', async (req, res, next) => {
 
@@ -252,7 +275,7 @@ app.get('/medicine', async (req, res, next) => {
     }))
     if(result.length>0){
 res.set('Content-Type', result[0].img.contentType);}
-
+console.log(data);
     res.json(data);
   }
   catch (err) {
@@ -516,6 +539,7 @@ app.post('/login', async (req, res, next) => {
 
 
     const user = await User.findOne({ email });
+    console.log(user)
 
     if (!user) {
       next(new Error("User Not Found"));
@@ -674,6 +698,127 @@ app.post('/passchange', async (req, res, next) => {
  
  })
  
+app.get('/dashboarddata',async (req,res,next)=>{
+
+
+try{
+
+
+const data={total_students:0,benfited_students:0,stock:0,graph_data:[],shortage_list:[],expiring_list:[]}
+
+
+
+const benfited_stu=await Transactions.aggregate([
+  {
+      $group: {
+          _id: "$stu_id",
+          count: { $sum: 1 }
+      }
+  },
+  {
+      $match: {
+          count: { $gte: 1 }
+      }
+  }
+]);
+data.benfited_students=benfited_stu.length;
+const total_stu=await Student.find()
+data.total_students=total_stu.length
+
+
+const graph_data=await Transactions.aggregate([
+  {
+      $match: {
+          date: {
+              $gte: new Date(new Date().getFullYear() - 1, 0, 1), // Start of last year
+              $lt: new Date() // Current date
+          }
+      }
+  },
+  {
+      $group: {
+          _id: {
+              $month: "$date" // Group by month
+          },
+          count: { $sum: 1 },
+          totalQuantity: { $sum: "$quantity" }
+      }
+  }
+])
+data.graph_data=graph_data;
+const allStock = await Stock.find();
+let totalImported = 0;
+let totalLeft = 0;
+
+allStock.forEach(stockItem => {
+    totalImported += stockItem.imported_quantity;
+    totalLeft += stockItem.left_quantity;
+});
+const overallPercentage = (totalLeft / totalImported) * 100;
+data.stock=overallPercentage;
+
+const lowStockMedicines = await Medicine.find({ available: { $lt: 50 } });
+const currentDate = new Date();
+const oneWeekLater = new Date(currentDate);
+oneWeekLater.setDate(currentDate.getDate() + 7);
+const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater } });
+data.expiring_list=expiringMedicines;
+
+
+const low_med_data=lowStockMedicines.map((each)=>({
+  name:each.name,
+  available:each.available,
+  img:{
+    data: each.img.data.toString('base64'),
+    contentType: each.img.contentType,
+  },
+  id:each._id
+}))
+if(lowStockMedicines.length>0){
+res.set('Content-Type', lowStockMedicines[0].img.contentType);}
+
+data.shortage_list=low_med_data;
+
+res.json(data);
+
+
+}
+catch(err)
+{
+  next(err);
+}
+
+
+
+
+})
+
+
+
+
+async function updateMedicineStock() {
+  const currentDate = new Date();
+
+  try {
+      const expiredMedicines = await Stock.find({ expery: { $lt: currentDate } });
+
+      for (const expiredMedicine of expiredMedicines) {
+          const medicine = await Medicine.findOne({ _id: expiredMedicine.med_id });
+          if (medicine) {
+              medicine.available -= expiredMedicine.left_quantity;
+              await medicine.save();
+          }
+      }
+  } catch (error) {
+      console.error('Error updating medicine stock:', error);
+  }
+}
+
+
+
+const job = scheduleJob('0 0 * * *', () => {
+  updateMedicineStock();
+});
 
 
 app.use((err, req, res, next) => {
@@ -684,3 +829,4 @@ app.use((err, req, res, next) => {
 
 
 app.listen(process.env.PORT, () => { console.log("server is running") });
+

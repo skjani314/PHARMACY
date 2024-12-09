@@ -3,11 +3,43 @@ import { useEffect, useContext, useState } from 'react';
 import { withRouter } from 'react-router-dom'
 import Context from '../../context/Context';
 import { Button, Row, Flex, Modal, Upload, Spin, DatePicker, Avatar, Typography } from 'antd';
-import { FaPlus, FaUpload } from 'react-icons/fa';
+import { FaDownload, FaPlus, FaUpload } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import StockSearchSuggest from '../Cards/StockSearchSuggest';
 import axios from 'axios';
 import Transactiontable from '../Tables/TransactionTable';
+
+import * as XLSX from 'xlsx';
+
+const downloadExcel = (jsonData, filename) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    const data=jsonData.map(each=>{
+        const {date,expery,imported_quantity,left_quantity,med_id}=each;
+
+        return {Date:date,name:med_id,imported_quantity,left_quantity,expery}
+    })
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    workbook.Sheets['Sheet1'] = worksheet;
+    workbook.SheetNames[0]='Sheet1';
+console.log(workbook)
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading Excel file:', error);
+  }
+};
+
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -47,6 +79,7 @@ const Stock = props => {
 
     }, []);
 
+    console.log(rowsData)
     const onDatesChange = async (values, dateStrings) => {
 
         setDates(values);
@@ -132,6 +165,7 @@ const Stock = props => {
             <Flex gap={10} justify='end' className='mb-2' wrap>
                 <Button className='m' onClick={() => { setStockForm((prev) => ({ ...prev, single: true })) }} ><FaPlus /> Add Stock</Button>
                 <Button className='m' onClick={() => { setStockForm((prev) => ({ ...prev, bulk: true })) }}><FaUpload /> Upload</Button>
+<Button onClick={()=>{downloadExcel(rowsData,'Stock_Transactions.xlsx')}}><FaDownload/> Download</Button>
             </Flex>
 
             <h1>Recent Imports</h1>
@@ -142,10 +176,6 @@ const Stock = props => {
             </Flex>
 
             <Transactiontable rowsData={rowsData} />
-
-
-
-
 
 
             <Modal open={stock_form.single} footer={null} onCancel={() => { setStockForm((prev) => ({ ...prev, single: false })) }}>

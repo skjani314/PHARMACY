@@ -1,11 +1,13 @@
 import { Avatar, Flex, Typography } from 'antd';
-import React from 'react';
+import React, { useContext } from 'react';
 import './SearchSuggest.css';
 import { Link } from 'react-router-dom'
+import Context from '../../context/Context';
 
 const { Text } = Typography;
 const SearchSuggest = props => {
 
+    const {user}=useContext(Context)
 
     const handleMed = () => {
 
@@ -21,7 +23,7 @@ const SearchSuggest = props => {
         <>
         {
             !props.transaction?
-                <Link to={'medicinepage?name=' + props.data.name} className="Link" >
+                <Link to={user?'medicinepage?name=' + props.data.name:'/?name=' + props.data.name} className="Link" >
                     
                     <div className='search-suggestion' onClick={handleMed}>
                         <Flex justify='start' className='mt-1' gap={5}>

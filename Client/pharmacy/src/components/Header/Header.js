@@ -22,20 +22,20 @@ const Header = (props) => {
     const { location } = props;
     const { pathname } = location;
     const {search_value,setSearchValue,page}=props;  
-    const {    Medicine_data,search_result,setSerachResult,setLoading, setMedSearchParam ,error }=useContext(Context);
+    const {    Medicine_data,search_result,setSerachResult,setLoading, setMedSearchParam ,error ,user}=useContext(Context);
     const history=useHistory();
     let placeHolder = '';
-    if (pathname === '/medicinepage' || pathname === '/medicinepage/') {
+    if (pathname === '/medicinepage' || pathname === '/medicinepage/' || pathname=='' || pathname=='/') {
         placeHolder = 'Search Medicine';
     }
     else if (pathname === '/studentpage' || pathname === '/studentpage/') {
         placeHolder = 'Search Student';
     }
+    
     const searchBar = placeHolder === '' && 'remove-search';
     const onClickSearchIcon = () => {
         setSearch((prevState) => (!prevState));
     }
-
 
 
     const handleSearch = async (e) => {
@@ -60,8 +60,12 @@ const Header = (props) => {
 
 const handleSearchSubmit=(value)=>
 {
- if(!page){   
-history.push('/medicinepage?name='+search_value);
+ if(!page){  
+    if(user){ 
+history.push('/medicinepage?name='+search_value);}
+else{
+    history.push('/?name='+search_value);
+}
 setSerachResult([]);
 setSearchValue("");
  }
@@ -98,7 +102,7 @@ setLoading(false);
                         <img src={logorgukt} className="styling-logo" alt="logo" />
                     </div>
                     <div className="logout-container">
-                        <div className={`search-container ${searchBar}`} >
+                        <div className={`search-container ${searchBar}`}  >
                             <Search
                                 placeholder={placeHolder}
                                 allowClear

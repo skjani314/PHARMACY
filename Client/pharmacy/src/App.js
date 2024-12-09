@@ -109,12 +109,12 @@ return (
   <BrowserRouter>
   <Switch>
     <Route exact path='/' component={HomePage}/>
-    <Route exact path='/dashboard' component={DashBoardPage}/>
+    <Route exact path='/dashboard' component={user?DashBoardPage:null}/>
     <Route path='/forgot/:token' component={Forgotpass} />
-    <Route exact path='/medicinepage' component={MedicinePage}/>
-    <Route exact path='/studentpage' component={StudentPage}/>
-    <Route exact path='/transactionpage' component={TransactionsPage}/>
-    <Route exact path='/stockpage' component={StockPage}/>
+    <Route exact path='/medicinepage' component={user?MedicinePage:null}/>
+    <Route exact path='/studentpage' component={user?StudentPage:null}/>
+    <Route exact path='/transactionpage' component={user?TransactionsPage:null}/>
+    <Route exact path='/stockpage' component={user?StockPage:null}/>
 
     <Route/>
   </Switch>

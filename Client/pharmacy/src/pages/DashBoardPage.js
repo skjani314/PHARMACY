@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useContext } from "react"
 import { Spin } from "antd";
 import Context from '../context/Context';
@@ -11,27 +11,33 @@ import Dashboard from '../components/Dashboard/Dashboard';
 
 const DashBoardPage = props => {
 
-    const {loading,setLoading,success,error,contextHolder}=useContext(Context);
+    const { loading, setLoading, success, error, contextHolder, changeActiveTab} = useContext(Context);
+
+
+    useEffect(() => {
+        changeActiveTab('DASHBOARD');
+
+    }, [])
 
 
     return (
         <>
-        {contextHolder}
-        <Spin tip="Loading...." size='large' spinning={loading}>
-        <div className="home-container">
-            <div className="home-header-sidebar"><Header /></div>
+            {contextHolder}
+            <Spin tip="Loading...." size='large' spinning={loading}>
+                <div className="home-container">
+                    <div className="home-header-sidebar"><Header /></div>
 
-            <div className="header-down">
-                <div className="sidebar-container">
-                    <Sidebar />
-                </div>
-                <div className="main-content">
-                    <Dashboard/>
-                </div>
-            </div>
+                    <div className="header-down">
+                        <div className="sidebar-container">
+                            <Sidebar />
+                        </div>
+                        <div className="main-content">
+                            <Dashboard />
+                        </div>
+                    </div>
 
-        </div>
-        </Spin>
+                </div>
+            </Spin>
         </>
     );
 };
