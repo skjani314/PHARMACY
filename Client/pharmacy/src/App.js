@@ -42,7 +42,7 @@ const App = () => {
     const getUser = async () => {
       try {
 
-        const result = await axios.post('https://pharmacy-production-6114.up.railway.app/get-user');
+        const result = await axios.post('https://pharmacy-production-6114.up.railway.app/get-user',{ withCredentials: true, });
         console.log(result);
         setUser(result.data);
         flag = true;
