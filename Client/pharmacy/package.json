@@ -1,7 +1,7 @@
 {
   "name": "pharmacy",
   "version": "0.1.0",
-  "proxy": "pharmacy-backend-op1zx4geo-shaik-mahammad-janis-projects.vercel.app",
+  "proxy": "https://pharmacy-dno6-81jxjnvjd-shaik-mahammad-janis-projects.vercel.app/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
