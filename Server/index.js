@@ -54,6 +54,7 @@ mongoose.connect('mongodb+srv://pharmacyrgukt:' + 'kivsz3X0xwbs2zVW' + '@pharmac
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+console.log("mongodb connected");
 }
 catch(err)
 {
