@@ -85,9 +85,13 @@ app.post('/get-user', async (req, res, next) => {
 
   const accessToken = req.cookies.accessToken;
   if (!accessToken) next(new Error("jwt token not found"));
+  console.log(accessToken);
+  console.log(req.cookies);
   await jwt.verify(accessToken, process.env.KEY, async (err, decode) => {
 
     if (err) {
+      console.log(err);
+
       next(err);
     }
     else {
@@ -277,7 +281,6 @@ app.get('/medicine', async (req, res, next) => {
 
   try {
     const { name } = req.query;
-    console.log(name);
 
     const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
 
@@ -293,7 +296,6 @@ app.get('/medicine', async (req, res, next) => {
     }))
     if(result.length>0){
 res.set('Content-Type', result[0].img.contentType);}
-console.log(data);
     res.json(data);
   }
   catch (err) {
