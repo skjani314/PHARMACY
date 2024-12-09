@@ -1,0 +1,55 @@
+# Query: axios.get('
+# ContextLines: 1
+
+11 results - 7 files
+
+Client/pharmacy/src/App.js:
+  60  
+  61:           const med_data = await axios.get('https://pharmacy-production-6114.up.railway.app/medicine', { name:"" });
+  62            
+
+Client/pharmacy/src/components/Cards/MedicineCard.js:
+   65              setLoading(true);
+   66:             const med_data = await axios.get('https://pharmacy-production-6114.up.railway.app/medicine', { name: "" });
+   67  
+
+  101        setFileListCard([]);
+  102:       const med_data = await axios.get('https://pharmacy-production-6114.up.railway.app/medicine', { name: "" });
+  103  
+
+Client/pharmacy/src/components/Dashboard/Dashboard.js:
+  37  
+  38:         const result = await axios.get('https://pharmacy-production-6114.up.railway.app/dashboarddata');
+  39          const x = result.data.graph_data.filter(each => each._id == (new Date().getMonth()) + 1)
+
+Client/pharmacy/src/components/Header/Header.js:
+  51      else if(e.target.value!="" && props.page){
+  52:              const result=await axios.get('https://pharmacy-production-6114.up.railway.app/student?stu_id='+e.target.value);
+  53               setSerachResult([...result.data]);
+
+  84      try{
+  85:     const result=await axios.get('https://pharmacy-production-6114.up.railway.app/transaction?stu_id='+value);
+  86      props.setSearachResult([...result.data.student,...result.data.response]);
+
+Client/pharmacy/src/components/Medicine/Medicine.js:
+  78              setLoading(true);
+  79:             const med_data = await axios.get('https://pharmacy-production-6114.up.railway.app/medicine', { name: "" });
+  80        
+
+Client/pharmacy/src/components/Stock/Stock.js:
+   67                  start.setDate(start.getDate() - 5);
+   68:                 const result = await axios.get('https://pharmacy-production-6114.up.railway.app/stock');
+   69                  //  console.log(result);
+
+  149              
+  150:             const result = await axios.get('https://pharmacy-production-6114.up.railway.app/stock?flag=false&start=' + dates[0].toISOString().split('T')[0] + '&end=' + dates[1].toISOString().split('T')[0]);
+  151  
+
+Client/pharmacy/src/components/Transactions/Transaction.js:
+   63              try {
+   64:                 const result = await axios.get('https://pharmacy-production-6114.up.railway.app/transaction');
+   65                  setTableData([...result.data]);
+
+  144  
+  145:                 const result = await axios.get('https://pharmacy-production-6114.up.railway.app/student?stu_id=' + e.target.value);
+  146                  setstuSearch([...result.data]);
