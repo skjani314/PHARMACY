@@ -42,7 +42,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: '*',
+    origin: 'https://pharmacy-3ppa609yz-shaik-mahammad-janis-projects.vercel.app',
     methods:["POST","GET","PUT","DELETE"],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -566,7 +566,6 @@ app.post('/login', async (req, res, next) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
         sameSite: 'none',
-        path: '/',
 
       });
 
