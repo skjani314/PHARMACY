@@ -16,10 +16,27 @@ import xlsx from 'xlsx';
 import Transactions from './modals/Transaction.js';
 import { promise } from 'bcrypt/promises.js';
 import { scheduleJob } from 'node-schedule';
+import path from 'path';
 
 dotenv.config();
 const app = express();
-const upload_file = multer({ dest: 'uploads/' });
+
+
+const storage=multer.diskStorage({
+  destination:(req,file,cb)=>{
+    cb(null,'/tmp/');
+  },
+  filename:(req,file,cb)=>{
+    cb(null,Date.now()+path.extname(file.originalname));
+  }
+
+});
+
+
+
+const upload_file = multer({storage});
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
