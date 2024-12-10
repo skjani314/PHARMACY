@@ -61,7 +61,7 @@ const Transaction = props => {
 
             setLoading(true);
             try {
-                const result = await axios.get(process.env.REACT_APP_API_URL+'/transaction',{},{ withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL+'/transaction',{ withCredentials: true, });
                 setTableData([...result.data]);
             }
             catch (err) {
@@ -127,7 +127,7 @@ const Transaction = props => {
 
         setLoading(true);
         try {
-            const result = await axios.get(process.env.REACT_APP_API_URL+`/transaction?start=${datseRange.start}&end=${datseRange.end}`,{},{ withCredentials: true, });
+            const result = await axios.get(process.env.REACT_APP_API_URL+`/transaction?start=${datseRange.start}&end=${datseRange.end}`,{ withCredentials: true, });
             setTableData([...result.data])
         }
         catch (err) {
@@ -142,7 +142,7 @@ const Transaction = props => {
         if (e.target.value != "") {
             try {
 
-                const result = await axios.get(process.env.REACT_APP_API_URL+'/student?stu_id=' + e.target.value,{},{ withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL+'/student?stu_id=' + e.target.value,{ withCredentials: true, });
                 setstuSearch([...result.data]);
             } catch {
                 error("something went wrong");

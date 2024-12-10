@@ -35,7 +35,7 @@ const Dashboard = () => {
 
       try {
 
-        const result = await axios.get(process.env.REACT_APP_API_URL+'/dashboarddata',{},{ withCredentials: true, });
+        const result = await axios.get(process.env.REACT_APP_API_URL+'/dashboarddata',{ withCredentials: true, });
         const x = result.data.graph_data.filter(each => each._id == (new Date().getMonth()) + 1)
 
         setData({ ...result.data, month_trans: x[0].count })
