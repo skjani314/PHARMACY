@@ -14,6 +14,7 @@ import MedicinePage from './pages/MedicinePage';
 import StockPage from './pages/StockPage';
 import StudentPage from './pages/StudentPage';
 import TransactionsPage from './pages/TransactionsPage';
+import NotFoundPage from './components/NotFound/NotFound';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('DASHBOARD');
@@ -115,13 +116,13 @@ const App = () => {
       <BrowserRouter>
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route exact path='/dashboard' component={user ? DashBoardPage : null} />
+          <Route exact path='/dashboard' component={user ? DashBoardPage : NotFoundPage} />
           <Route path='/forgot/:token' component={Forgotpass} />
-          <Route exact path='/medicinepage' component={user ? MedicinePage : null} />
-          <Route exact path='/studentpage' component={user ? StudentPage : null} />
-          <Route exact path='/transactionpage' component={user ? TransactionsPage : null} />
-          <Route exact path='/stockpage' component={user ? StockPage : null} />
-
+          <Route exact path='/medicinepage' component={user ? MedicinePage :NotFoundPage} />
+          <Route exact path='/studentpage' component={user ? StudentPage : NotFoundPage} />
+          <Route exact path='/transactionpage' component={user ? TransactionsPage : NotFoundPage} />
+          <Route exact path='/stockpage' component={user ? StockPage : NotFoundPage} />
+          <Route path="*" component={NotFoundPage} />
           <Route />
         </Switch>
 
