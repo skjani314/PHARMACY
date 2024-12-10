@@ -65,7 +65,7 @@ const Stock = props => {
 
                 const start = new Date();
                 start.setDate(start.getDate() - 5);
-                const result = await axios.get('/stock');
+                const result = await axios.get(process.env.REACT_APP_API_URL+'/stock',{},{ withCredentials: true, });
                 //  console.log(result);
                 setRows(prev => ([...prev, ...result.data]));
             } catch (err) {
@@ -103,7 +103,7 @@ const Stock = props => {
         try {
 
 
-            const result = await axios.post('/stock', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/stock', form_Data, { withCredentials: true });
             console.log(result);
             success("Stock Added Successfully");
             setFormData((prev) => ({ imported_quantity: '', expery: '', med_id: '' }))
@@ -147,7 +147,7 @@ const Stock = props => {
         try {
 
             
-            const result = await axios.get('/stock?flag=false&start=' + dates[0].toISOString().split('T')[0] + '&end=' + dates[1].toISOString().split('T')[0]);
+            const result = await axios.get(process.env.REACT_APP_API_URL+'/stock?flag=false&start=' + dates[0].toISOString().split('T')[0] + '&end=' + dates[1].toISOString().split('T')[0],{},{ withCredentials: true, });
 
             setRows(prev => ([...result.data]));
         } catch (err) {

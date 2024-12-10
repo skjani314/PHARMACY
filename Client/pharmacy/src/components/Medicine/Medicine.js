@@ -64,7 +64,7 @@ if((formdata.name && formdata.usage) || med_form.bulk){
 
         try {
             console.log(form_Data);
-            const result = await axios.post('/medicine', form_Data);
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/medicine', form_Data,{ withCredentials: true, });
             console.log(result);
             setLoading(false);
                if(!med_form.bulk){
@@ -76,7 +76,7 @@ if((formdata.name && formdata.usage) || med_form.bulk){
             success("Medicine Added Succesfully");
             setFileList([]);
             setLoading(true);
-            const med_data = await axios.get('/medicine', { name: "" });
+            const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', { name: "" });
       
                   setMedData([...med_data.data]);
                   setLoading(false);

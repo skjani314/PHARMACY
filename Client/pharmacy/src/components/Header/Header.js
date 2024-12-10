@@ -49,7 +49,7 @@ const Header = (props) => {
         setSerachResult([...result]);
     }
     else if(e.target.value!="" && props.page){
-             const result=await axios.get('/student?stu_id='+e.target.value);
+             const result=await axios.get(process.env.REACT_APP_API_URL+'/student?stu_id='+e.target.value,{},{ withCredentials: true, });
              setSerachResult([...result.data]);
 
     }
@@ -82,7 +82,7 @@ const handleSearchResultClick=async (value)=>{
     setSerachResult([]);
     setSearchValue("");
     try{
-    const result=await axios.get('/transaction?stu_id='+value);
+    const result=await axios.get(process.env.REACT_APP_API_URL+'/transaction?stu_id='+value,{},{ withCredentials: true, });
     props.setSearachResult([...result.data.student,...result.data.response]);
     }catch(err)
     {

@@ -61,7 +61,7 @@ const Transaction = props => {
 
             setLoading(true);
             try {
-                const result = await axios.get('/transaction');
+                const result = await axios.get(process.env.REACT_APP_API_URL+'/transaction',{},{ withCredentials: true, });
                 setTableData([...result.data]);
             }
             catch (err) {
@@ -103,7 +103,7 @@ const Transaction = props => {
         form_Data.append('med_id', formdata.med_id);
         try {
 
-            const result =await axios.post('/transaction', form_Data, { withCredentials: true });
+            const result =await axios.post(process.env.REACT_APP_API_URL+'/transaction', form_Data, { withCredentials: true });
             console.log(result);
             success("Medicine Issued Succesfully");
 
@@ -127,7 +127,7 @@ const Transaction = props => {
 
         setLoading(true);
         try {
-            const result = await axios.get(`/transaction?start=${datseRange.start}&end=${datseRange.end}`);
+            const result = await axios.get(process.env.REACT_APP_API_URL+`/transaction?start=${datseRange.start}&end=${datseRange.end}`,{},{ withCredentials: true, });
             setTableData([...result.data])
         }
         catch (err) {
@@ -142,7 +142,7 @@ const Transaction = props => {
         if (e.target.value != "") {
             try {
 
-                const result = await axios.get('/student?stu_id=' + e.target.value);
+                const result = await axios.get(process.env.REACT_APP_API_URL+'/student?stu_id=' + e.target.value,{},{ withCredentials: true, });
                 setstuSearch([...result.data]);
             } catch {
                 error("something went wrong");
