@@ -43,7 +43,7 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['https://pharmacy-lpbndg9v1-shaik-mahammad-janis-projects.vercel.app'];
+    const allowedOrigins = ['https://pharmacy-lpbndg9v1-shaik-mahammad-janis-projects.vercel.app','http://localhost:3000'];
     if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app'))) {
         callback(null, true); 
     } else {
@@ -83,9 +83,8 @@ app.post('/get-user', async (req, res, next) => {
 
 
   const accessToken = req.cookies.accessToken;
-  if (!accessToken) next(new Error("jwt token not found"));
-  console.log(accessToken);
-  console.log(req.cookies);
+  if (!accessToken){ next(new Error("jwt token not found"))}
+  else{
   await jwt.verify(accessToken, process.env.KEY, async (err, decode) => {
 
     if (err) {
@@ -103,7 +102,7 @@ app.post('/get-user', async (req, res, next) => {
 
   })
 
-
+  }
 })
 
 
@@ -113,12 +112,11 @@ app.post('/login', async (req, res, next) => {
 
 
     const user = await User.findOne({ email });
-    console.log(user)
 
     if (!user) {
       next(new Error("User Not Found"));
     }
-
+    else{
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
@@ -137,6 +135,8 @@ app.post('/login', async (req, res, next) => {
     } else {
       return res.status(401).json({ message: "Password incorrect" });
     }
+
+  }
   } catch (error) {
     next(error)
   }
@@ -509,9 +509,7 @@ else if(req.files.length>0){
   fs.unlinkSync(req.files[0].path);
 
 }
-else{
-  next(new Error("no item to update"));
-}
+
 console.log("medicine updated");
 res.status(200).send("medicine updated succesfully");
 
@@ -616,6 +614,7 @@ app.post('/transaction', async (req, res, next) => {
     const left=med_data.available-quantity;
 
     if(left<0)next(new Error("unable to process request"));
+    else{
     const up_result = await Medicine.findOneAndUpdate({name:med_id}, { available: left }, { new: true });
 
 
@@ -646,7 +645,7 @@ console.log(x);
 
     const result = await Transactions.create({ stu_id, med_id, reason, quantity });
     res.json(result);
-   
+    }
 
   } 
   catch (err) {

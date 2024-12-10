@@ -115,10 +115,10 @@ setLoading(false);
 
                             <div className='mt-2' style={{ position: 'fixed', top: '55px', background: 'whitesmoke', }}>
                                 {
-                                    search_result.map((each)=>(
+                                    search_result.map((each,index)=>(
                                         !page?
                                         <SearchSuggest key={each.id} data={each} setSerachResult={setSerachResult}  setSearchValue={ setSearchValue}/>
-                                        :<Flex vertical className='m-1 p-2 search-suggestion' style={{background:"white",width:"100%"}} onClick={()=>handleSearchResultClick(each.stu_id)}>
+                                        :<Flex key={index} vertical className='m-1 p-2 search-suggestion' style={{background:"white",width:"100%"}} onClick={()=>handleSearchResultClick(each.stu_id)}>
                                         <Text>{each.stu_id}</Text>
                                         <Text style={{fontSize:11}}>{each.name}</Text>
                                         </Flex>
@@ -127,7 +127,7 @@ setLoading(false);
 
                             </div>
                         </div>
-                        <IoSearchSharp className='styling-search-icon' onClick={onClickSearchIcon} />
+                        <IoSearchSharp className={`styling-search-icon ${searchBar}`} onClick={onClickSearchIcon} />
                         <IoIosNotifications className="styling-icon" />
                         <LogIn />
                     </div>
