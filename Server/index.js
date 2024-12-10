@@ -712,17 +712,19 @@ app.get('/transaction', async (req, res, next) => {
 
 
 app.post('/logout', (req, res) => {
+    try {
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'None', 
+            path: '/', 
+        });
+        return res.json({ message: "Logout successfully" });
+    } catch (error) {
+        next(error);
+    }
+});
 
-  try {
-    res.clearCookie('accessToken');
-
-    return res.json("Logout sccessfully");
-  }
-  catch (error) {
-    next(error);
-  }
-
-})
 
 
 
