@@ -32,7 +32,7 @@ const storage=multer.diskStorage({
 
 });
 
-
+app.set("trust proxy",1);
 
 const upload_file = multer({storage});
 
@@ -842,7 +842,7 @@ const job = scheduleJob('0 0 * * *', () => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  return res.status(500).json({ error: true });
+  return res.status(500).json({ error: err });
 });
 
 
