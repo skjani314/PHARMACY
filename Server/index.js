@@ -258,30 +258,49 @@ app.post('/passchange', async (req, res, next) => {
  })
  
 
+ app.get('/medicine', async (req, res, next) => {
 
-app.use(async (req,res,next)=>{
+  try {
+    const { name } = req.query;
+
+    const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
+
+    const data=result.map((each)=>({
+      name:each.name,
+      available:each.available,
+      useage:each.useage,
+      img:{
+        data: each.img.data.toString('base64'),
+        contentType: each.img.contentType,
+      },
+      id:each._id
+    }))
+    if(result.length>0){
+res.set('Content-Type', result[0].img.contentType);}
+    res.json(data);
+  }
+  catch (err) {
+    next(err);
+  }
+
+
+});
 
 
 
+const authenticate = async (req, res, next) => {
   const accessToken = req.cookies.accessToken;
-  if (!accessToken) next(new Error("UnAutherized"));
-  await jwt.verify(accessToken, process.env.KEY, async (err, decode) => {
-
-    if (err) {
-      next(err);
-    }
-    else {
-
+  if (!accessToken) return res.status(401).json({ message: "Unauthorized" });
+  try {
+    const decoded = jwt.verify(accessToken, process.env.KEY);
+    req.user = decoded; 
     next();
-    }
+  } catch (err) {
+    res.status(401).json({ message: "Invalid Token" });
+  }
+};
 
-  })
-
-})
-
-
-
-
+app.use(authenticate)
 
 
 app.post('/stock', async (req, res, next) => {
@@ -440,33 +459,7 @@ res.json(bulk_response);
 });
 
 
-app.get('/medicine', async (req, res, next) => {
 
-  try {
-    const { name } = req.query;
-
-    const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
-
-    const data=result.map((each)=>({
-      name:each.name,
-      available:each.available,
-      useage:each.useage,
-      img:{
-        data: each.img.data.toString('base64'),
-        contentType: each.img.contentType,
-      },
-      id:each._id
-    }))
-    if(result.length>0){
-res.set('Content-Type', result[0].img.contentType);}
-    res.json(data);
-  }
-  catch (err) {
-    next(err);
-  }
-
-
-});
 
 app.delete('/medicine', async (req, res, next) => {
 
