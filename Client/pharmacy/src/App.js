@@ -42,7 +42,7 @@ const App = () => {
     const getUser = async () => {
       try {
 
-        const result = await axios.post('https://pharmacy-production-6114.up.railway.app/get-user',{},{ withCredentials: true, });
+        const result = await axios.post(process.env.REACT_APP_API_URL+'/get-user',{},{ withCredentials: true, });
         console.log(result);
         setUser(result.data);
         flag = true;
@@ -58,7 +58,7 @@ const App = () => {
       setLoading(true);
       try {
 
-        const med_data = await axios.get('https://pharmacy-production-6114.up.railway.app/medicine', {
+        const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', {
           name: "", 
           headers: {
             'Accept': 'application/json',
