@@ -66,7 +66,7 @@ const handleLogData=(e)=>
     
         setLogdata({email:'',password:''});
         handleCancel();
-        const result= await axios.post('https://pharmacy-production-6114.up.railway.app/get-user',{ withCredentials: true, });
+        const result= await axios.post('https://pharmacy-production-6114.up.railway.app/get-user',{},{ withCredentials: true, });
         setUser(result.data);
         setLoading(false);
         success("Logged In successfully");
