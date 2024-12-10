@@ -42,11 +42,24 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: 'https://pharmacy-2mgfngaco-shaik-mahammad-janis-projects.vercel.app/',
+  origin: (origin, callback) => {
+    const allowedOrigins = ['https://pharmacy-lpbndg9v1-shaik-mahammad-janis-projects.vercel.app'];
+    if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app'))) {
+        callback(null, true); 
+    } else {
+        callback(new Error('Not allowed by CORS')); 
+    }
+},
     methods:["POST","GET","PUT","DELETE"],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+
   }))
 
+  app.use((req, res, next) => {
+    req.setTimeout(60000); 
+    next();
+});
 
 try{
 
@@ -72,9 +85,13 @@ app.post('/get-user', async (req, res, next) => {
 
   const accessToken = req.cookies.accessToken;
   if (!accessToken) next(new Error("jwt token not found"));
+  console.log(accessToken);
+  console.log(req.cookies);
   await jwt.verify(accessToken, process.env.KEY, async (err, decode) => {
 
     if (err) {
+      console.log(err);
+
       next(err);
     }
     else {
@@ -264,7 +281,6 @@ app.get('/medicine', async (req, res, next) => {
 
   try {
     const { name } = req.query;
-    console.log(name);
 
     const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
 
@@ -280,7 +296,6 @@ app.get('/medicine', async (req, res, next) => {
     }))
     if(result.length>0){
 res.set('Content-Type', result[0].img.contentType);}
-console.log(data);
     res.json(data);
   }
   catch (err) {
@@ -560,7 +575,6 @@ app.post('/login', async (req, res, next) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
         sameSite: 'none',
-        path: '/',
 
       });
 
