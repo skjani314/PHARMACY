@@ -129,6 +129,7 @@ app.post('/login', async (req, res, next) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
         sameSite: 'None',
+        path: '/',
 
       });
 
