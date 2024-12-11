@@ -43,7 +43,7 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['https://pharmacy-lpbndg9v1-shaik-mahammad-janis-projects.vercel.app','http://localhost:3000'];
+    const allowedOrigins = ['https://pharmacy-xi-one.vercel.app','http://localhost:3000'];
     if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app'))) {
         callback(null, true); 
     } else {
@@ -172,7 +172,7 @@ app.post('/forget', async (req, res, next) => {
         from: 'pharmacyrgukt@gmail.com',
         to: email,
         subject: 'Forget Password',
-        text: 'Your Password reset link is provided here and \n it will work only for 5 minuetes\n' + 'http://192.168.245.207:3000/forgot/' + token
+        text: 'Your Password reset link is provided here and \n it will work only for 5 minuetes\n' + 'https://pharmacy-xi-one.vercel.app/forgot/' + token
       };
 
       await transporter.sendMail(mailOptions, function (error, info) {
@@ -836,12 +836,14 @@ async function updateMedicineStock() {
 
   try {
       const expiredMedicines = await Stock.find({ expery: { $lt: currentDate } });
-
       for (const expiredMedicine of expiredMedicines) {
-          const medicine = await Medicine.findOne({ _id: expiredMedicine.med_id });
+          const medicine = await Medicine.findOne( {name:expiredMedicine.med_id} );
+          console.log(medicine)
           if (medicine) {
               medicine.available -= expiredMedicine.left_quantity;
-              await medicine.save();
+              if(medicine.available<0)medicine.available=0;
+             let x = await medicine.save();
+             console.log(x);
           }
       }
   } catch (error) {
@@ -851,9 +853,10 @@ async function updateMedicineStock() {
 
 
 
-const job = scheduleJob('0 0 * * *', () => {
-  updateMedicineStock();
-});
+
+setInterval(updateMedicineStock, 86400000);
+
+
 
 
 app.use((err, req, res, next) => {

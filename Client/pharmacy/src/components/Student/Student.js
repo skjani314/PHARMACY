@@ -6,7 +6,7 @@ import { FaPlus, FaTrash, FaUpload } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import Issuetable from '../Tables/Issuetable';
-
+import xlDemo from './student.png';
 
 const Student = props => {
     const [student_form, setStudentForm] = useState({ bulk: false, single: false });
@@ -106,7 +106,10 @@ console.log(err);
 
             <Modal open={student_form.bulk} footer={null} onCancel={() => { setStudentForm((prev) => ({ ...prev, bulk: false })) }}>
                 <Spin tip="Loading...." size='large' spinning={loading}>
-                    <h1>Add Stock In Bulk</h1>
+                    <h1>Add Student In Bulk</h1>
+                    <h3>xlsheet Structure</h3>
+                    <img className='img-fluid' alt='xlsheet structure' src={xlDemo}></img>
+
                     <Upload
                         multiple
                         beforeUpload={() => false}

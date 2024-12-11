@@ -6,7 +6,7 @@ import { FaPlus, FaUpload } from 'react-icons/fa';
 import MedicineCard from '../Cards/MedicineCard';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
-
+import xldemo from './images/medicine.png'
 
 const Medicine = props => {
 
@@ -152,6 +152,9 @@ if((formdata.name && formdata.usage) || med_form.bulk){
                 <Spin tip="Loading...." size='large' spinning={loading}>
 
                     <h1>Add Medicines In Bulk</h1>
+                    <h3>xlsheet Structure</h3>
+                    <img className='img-fluid' alt='xlsheet structure' src={xldemo}></img>
+                    <p> first upload xlsheet then upload images of medicines in order entered in xlsheet</p>
                     <Upload
                         multiple
                         listType="picture"

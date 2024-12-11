@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import StockSearchSuggest from '../Cards/StockSearchSuggest';
 import axios from 'axios';
 import Transactiontable from '../Tables/TransactionTable';
+import xldemo from './stock.png';
 
 import * as XLSX from 'xlsx';
 
@@ -205,6 +206,9 @@ const Stock = props => {
                 <Spin tip="Loading...." size='large' spinning={loading}>
 
                     <h1>Add Stock In Bulk</h1>
+                    <h3>xlsheet Structure</h3>
+                    <img className='img-fluid' alt='xlsheet structure' src={xldemo}></img>
+
                     <Upload
                         multiple
                         beforeUpload={() => false}
