@@ -3,7 +3,7 @@ import Home from './components/Home/Home';
 import Context from './context/Context';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { message } from 'antd';
+import { message,Spin } from 'antd';
 import Forgotpass from './components/Login/Forgotpass';
 import axios from 'axios';
 import 'bootstrap';
@@ -111,6 +111,7 @@ const App = () => {
 
 
   return (
+    <Spin tip="Loading...." size='large' spinning={loading}>
     <Context.Provider value={context_data}>
 
       <BrowserRouter>
@@ -129,6 +130,7 @@ const App = () => {
       </BrowserRouter>
 
     </Context.Provider>
+    </Spin>
   );
 }
 

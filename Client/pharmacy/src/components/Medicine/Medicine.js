@@ -101,7 +101,7 @@ if((formdata.name && formdata.usage) || med_form.bulk){
 
     return (
         <>
-            <Card style={{width:"100%",minWidth:300,minHeight:"100vh",background:'whitesmoke'}}>
+            <Card style={{width:"100%",minHeight:"100vh",background:'whitesmoke'}}>
                 <h1 className='p-3'>Medicines</h1>
                 {user?
                 <Flex gap={10} justify='end' className='mb-2' wrap>

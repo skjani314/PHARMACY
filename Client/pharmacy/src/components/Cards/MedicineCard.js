@@ -44,7 +44,7 @@ const [usage,setUsage]=useState(null)
     }
     else if (isSmallScreen) {
         card_gap = 30;
-        card_width=350
+        card_width=300
         card_height=250
 
     }

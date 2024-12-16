@@ -796,7 +796,7 @@ const lowStockMedicines = await Medicine.find({ available: { $lt: 50 } });
 const currentDate = new Date();
 const oneWeekLater = new Date(currentDate);
 oneWeekLater.setDate(currentDate.getDate() + 7);
-const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater } });
+const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater,$gte: currentDate, } });
 data.expiring_list=expiringMedicines;
 
 
