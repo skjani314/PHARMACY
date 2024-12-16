@@ -140,7 +140,7 @@ const Dashboard = () => {
           </Flex>
           <ShortageTable rowsdata={data.shortage_list.slice(0, 5)} />
           {
-            !data.expiring_list.length > 0 ?
+            !data.shortage_list.length > 0 ?
               <div style={{ minHeight: 300, width: "100%" }} className='mt-5' >
                 <h1 className='text-center'>
                   No medicines are in Shortage
