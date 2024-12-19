@@ -25,7 +25,7 @@ const HomePage = props => {
         <>
             {contextHolder}
             <Spin tip="Loading...." size='large' spinning={loading}>
-
+            <div className='container-fluid'>
                 <Header
                     search_value={search_value}
                     setSearchValue={setSearchValue}
@@ -47,8 +47,9 @@ const HomePage = props => {
                         <img src={c5} className='mx-3' />
                     </div>
                 </Carousel>:null
-}
+}              
                 <Medicine param={searchParams.get('name')} />
+                </div>
             </Spin>
         </>
     );

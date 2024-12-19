@@ -6,7 +6,7 @@ import { FaPlus, FaTrash, FaUpload } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import Issuetable from '../Tables/Issuetable';
-
+import xlDemo from './student.png';
 
 const Student = props => {
     const [student_form, setStudentForm] = useState({ bulk: false, single: false });
@@ -41,7 +41,7 @@ const Student = props => {
         try {
 
 
-            const result = await axios.post('/student', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/student', form_Data, { withCredentials: true });
             console.log(result);
             success("Student Added Successfully");
             setFormData((prev) => ({ stu_id: '', name: '', class_name: '', dorm: '' }))
@@ -64,7 +64,7 @@ const handleDelete=async ()=>{
  try{   
     
 
-const response=await axios.delete('/student?flag=false&batch='+deleteForm.batch);
+const response=await axios.delete(process.env.REACT_APP_API_URL+'/student?flag=false&batch='+deleteForm.batch,{},{ withCredentials: true, });
 console.log(response);
 success("Batch Details are Deleted successfully");
  }catch(err)
@@ -106,7 +106,10 @@ console.log(err);
 
             <Modal open={student_form.bulk} footer={null} onCancel={() => { setStudentForm((prev) => ({ ...prev, bulk: false })) }}>
                 <Spin tip="Loading...." size='large' spinning={loading}>
-                    <h1>Add Stock In Bulk</h1>
+                    <h1>Add Student In Bulk</h1>
+                    <h3>xlsheet Structure</h3>
+                    <img className='img-fluid' alt='xlsheet structure' src={xlDemo}></img>
+
                     <Upload
                         multiple
                         beforeUpload={() => false}

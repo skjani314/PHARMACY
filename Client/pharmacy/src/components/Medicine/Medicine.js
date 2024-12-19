@@ -6,7 +6,7 @@ import { FaPlus, FaUpload } from 'react-icons/fa';
 import MedicineCard from '../Cards/MedicineCard';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
-
+import xldemo from './images/medicine.png'
 
 const Medicine = props => {
 
@@ -64,7 +64,7 @@ if((formdata.name && formdata.usage) || med_form.bulk){
 
         try {
             console.log(form_Data);
-            const result = await axios.post('/medicine', form_Data);
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/medicine', form_Data,{ withCredentials: true, });
             console.log(result);
             setLoading(false);
                if(!med_form.bulk){
@@ -76,7 +76,7 @@ if((formdata.name && formdata.usage) || med_form.bulk){
             success("Medicine Added Succesfully");
             setFileList([]);
             setLoading(true);
-            const med_data = await axios.get('/medicine', { name: "" });
+            const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', { name: "" });
       
                   setMedData([...med_data.data]);
                   setLoading(false);
@@ -101,7 +101,7 @@ if((formdata.name && formdata.usage) || med_form.bulk){
 
     return (
         <>
-            <Card style={{width:"100%",minWidth:400,background:'whitesmoke'}}>
+            <Card style={{width:"100%",minHeight:"100vh",background:'whitesmoke'}}>
                 <h1 className='p-3'>Medicines</h1>
                 {user?
                 <Flex gap={10} justify='end' className='mb-2' wrap>
@@ -152,6 +152,9 @@ if((formdata.name && formdata.usage) || med_form.bulk){
                 <Spin tip="Loading...." size='large' spinning={loading}>
 
                     <h1>Add Medicines In Bulk</h1>
+                    <h3>xlsheet Structure</h3>
+                    <img className='img-fluid' alt='xlsheet structure' src={xldemo}></img>
+                    <p> first upload xlsheet then upload images of medicines in order entered in xlsheet</p>
                     <Upload
                         multiple
                         listType="picture"

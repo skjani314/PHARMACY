@@ -44,8 +44,8 @@ const [usage,setUsage]=useState(null)
     }
     else if (isSmallScreen) {
         card_gap = 30;
-        card_width=400
-        card_height=220
+        card_width=300
+        card_height=250
 
     }
     else {
@@ -59,11 +59,11 @@ const [usage,setUsage]=useState(null)
         setLoading(true);
         console.log(props.data.name);
         try {
-            const result = await axios.delete(`/medicine?id=${props.data.name}`);
+            const result = await axios.delete(process.env.REACT_APP_API_URL+`/medicine?id=${props.data.name}`,{},{ withCredentials: true, });
             console.log(result);
             success("deleted succesfully");
             setLoading(true);
-            const med_data = await axios.get('/medicine', { name: "" });
+            const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', { name: "" });
 
             props.setData([...med_data.data]);
 
@@ -94,12 +94,12 @@ const handleEditUpload=async ()=>{
     
    
       setLoading(true);
-      const result=await axios.put(`/medicine`,form_Data)
+      const result=await axios.put(process.env.REACT_APP_API_URL+`/medicine`,form_Data,{ withCredentials: true, })
       console.log(result);
       success("updated successfully");
       setIsEdit(false);
       setFileListCard([]);
-      const med_data = await axios.get('/medicine', { name: "" });
+      const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', { name: "" });
 
             props.setData([...med_data.data]);
             setLoading(false);

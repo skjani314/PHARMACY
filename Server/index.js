@@ -32,7 +32,7 @@ const storage=multer.diskStorage({
 
 });
 
-
+app.set("trust proxy",1);
 
 const upload_file = multer({storage});
 
@@ -43,7 +43,7 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['https://pharmacy-lpbndg9v1-shaik-mahammad-janis-projects.vercel.app'];
+    const allowedOrigins = ['https://pharmacy-xi-one.vercel.app','http://localhost:3000'];
     if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app'))) {
         callback(null, true); 
     } else {
@@ -81,14 +81,12 @@ app.use(upload_file.array('img'));
 
 
 
-
 app.post('/get-user', async (req, res, next) => {
 
 
   const accessToken = req.cookies.accessToken;
-  if (!accessToken) next(new Error("jwt token not found"));
-  console.log(accessToken);
-  console.log(req.cookies);
+  if (!accessToken){ next(new Error("jwt token not found"))}
+  else{
   await jwt.verify(accessToken, process.env.KEY, async (err, decode) => {
 
     if (err) {
@@ -106,22 +104,207 @@ app.post('/get-user', async (req, res, next) => {
 
   })
 
-
+  }
 })
 
 
-app.post('/logout', (req, res) => {
+app.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      next(new Error("User Not Found"));
+    }
+    else{
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
+      const accessToken = jwt.sign({ email }, process.env.KEY, { expiresIn: '7d' });
+
+      res.cookie('accessToken ', accessToken, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true,
+        sameSite: 'None',
+        path: '/',
+
+      });
+
+      return res.status(200).json("logged in sucessfully");
+    } else {
+      return res.status(401).json({ message: "Password incorrect" });
+    }
+
+  }
+  } catch (error) {
+    next(error)
+  }
+});
+
+
+
+app.post('/forget', async (req, res, next) => {
 
   try {
-    res.clearCookie('accessToken');
 
-    return res.json("Logout sccessfully");
+    const { email } = req.body;
+    console.log(email);
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      next(new Error("User Not Found"));
+    }
+    else {
+
+
+      const token = jwt.sign({ email }, process.env.KEY, { expiresIn: '5m' });
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'pharmacyrgukt@gmail.com',
+          pass: process.env.EMAIL_APPCODE
+        }
+      });
+
+      const mailOptions = {
+        from: 'pharmacyrgukt@gmail.com',
+        to: email,
+        subject: 'Forget Password',
+        text: 'Your Password reset link is provided here and \n it will work only for 5 minuetes\n' + 'https://pharmacy-xi-one.vercel.app/forgot/' + token
+      };
+
+      await transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+      res.sendStatus(200);
+
+    }
   }
-  catch (error) {
-    next(error);
+  catch (err) {
+
+    next(err);
+
   }
+
 
 })
+
+
+
+
+app.post('/forget/verify', async (req, res, next) => {
+
+
+  try {
+
+    const token = req.body.token;
+    await jwt.verify(token, process.env.KEY, (err, decode) => {
+
+      if (err) {
+        next(err);
+      }
+      else {
+        res.json({ verified: true, email: decode.email });
+        console.log(decode);
+
+      }
+
+    })
+  }
+  catch (err) {
+
+    next(err);
+
+  }
+
+});
+
+
+app.post('/passchange', async (req, res, next) => {
+
+  console.log(req.body);
+   const { token} = req.body;
+   const pass=req.body.data.password;
+ 
+   try {
+  
+     await jwt.verify(token, process.env.KEY, async (err, decode) => {
+ 
+       if (err) {
+         next(err)
+       }
+       else {
+ 
+         const email = decode.email;
+         const hashpassword=await bcrypt.hash(pass,10);
+         console.log(hashpassword)
+         const result = await User.findOneAndUpdate({ email }, { password: hashpassword }, { new: true, runValidators: true });
+         res.status(200).json("Password changed");
+ 
+       }
+ 
+ 
+     })
+   }
+   catch (err) {
+     next(err);
+   }
+ 
+ })
+ 
+
+ app.get('/medicine', async (req, res, next) => {
+
+  try {
+    const { name } = req.query;
+
+    const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
+
+    const data=result.map((each)=>({
+      name:each.name,
+      available:each.available,
+      useage:each.useage,
+      img:{
+        data: each.img.data.toString('base64'),
+        contentType: each.img.contentType,
+      },
+      id:each._id
+    }))
+    if(result.length>0){
+res.set('Content-Type', result[0].img.contentType);}
+    res.json(data);
+  }
+  catch (err) {
+    next(err);
+  }
+
+
+});
+
+
+
+const authenticate = async (req, res, next) => {
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) return res.status(401).json({ message: "Unauthorized" });
+  try {
+    const decoded = jwt.verify(accessToken, process.env.KEY);
+    req.user = decoded; 
+    next();
+  } catch (err) {
+    res.status(401).json({ message: "Invalid Token" });
+  }
+};
+
+app.use(authenticate)
+
 
 app.post('/stock', async (req, res, next) => {
 
@@ -213,28 +396,28 @@ app.get('/stock', async (req, res, next) => {
 });
 
 
-app.post('/register', async (req, res, next) => {
+// app.post('/register', async (req, res, next) => {
 
 
-  try {
-    const { name, phone, email, password, } = req.body;
+//   try {
+//     const { name, phone, email, password, } = req.body;
 
 
-    const hashpassword = await bcrypt.hash(password, 10);
+//     const hashpassword = await bcrypt.hash(password, 10);
 
-    await User.create({ name, phone, email, password: hashpassword, img: { data: fs.readFileSync(req.file.path), contentType: req.file.mimetype } })
+//     await User.create({ name, phone, email, password: hashpassword, img: { data: fs.readFileSync(req.file.path), contentType: req.file.mimetype } })
 
-    console.log("created succesfully");
-    res.status(200).send("created succesfully");
-    fs.unlinkSync(req.file.path);
+//     console.log("created succesfully");
+//     res.status(200).send("created succesfully");
+//     fs.unlinkSync(req.file.path);
 
-  }
-  catch (err) {
-    next(err);
-  }
+//   }
+//   catch (err) {
+//     next(err);
+//   }
 
 
-});
+// });
 
 app.post('/medicine', async (req, res, next) => {
 
@@ -279,33 +462,7 @@ res.json(bulk_response);
 });
 
 
-app.get('/medicine', async (req, res, next) => {
 
-  try {
-    const { name } = req.query;
-
-    const result = await Medicine.find({ name: { $regex: new RegExp(name, 'i') } });
-
-    const data=result.map((each)=>({
-      name:each.name,
-      available:each.available,
-      useage:each.useage,
-      img:{
-        data: each.img.data.toString('base64'),
-        contentType: each.img.contentType,
-      },
-      id:each._id
-    }))
-    if(result.length>0){
-res.set('Content-Type', result[0].img.contentType);}
-    res.json(data);
-  }
-  catch (err) {
-    next(err);
-  }
-
-
-});
 
 app.delete('/medicine', async (req, res, next) => {
 
@@ -354,9 +511,7 @@ else if(req.files.length>0){
   fs.unlinkSync(req.files[0].path);
 
 }
-else{
-  next(new Error("no item to update"));
-}
+
 console.log("medicine updated");
 res.status(200).send("medicine updated succesfully");
 
@@ -461,6 +616,7 @@ app.post('/transaction', async (req, res, next) => {
     const left=med_data.available-quantity;
 
     if(left<0)next(new Error("unable to process request"));
+    else{
     const up_result = await Medicine.findOneAndUpdate({name:med_id}, { available: left }, { new: true });
 
 
@@ -491,7 +647,7 @@ console.log(x);
 
     const result = await Transactions.create({ stu_id, med_id, reason, quantity });
     res.json(result);
-   
+    }
 
   } 
   catch (err) {
@@ -555,170 +711,30 @@ app.get('/transaction', async (req, res, next) => {
 })
 
 
-app.post('/login', async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-
-
-    const user = await User.findOne({ email });
-    console.log(user)
-
-    if (!user) {
-      next(new Error("User Not Found"));
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (isMatch) {
-      const accessToken = jwt.sign({ email }, process.env.KEY, { expiresIn: '7d' });
-
-      res.cookie('accessToken ', accessToken, {
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        secure: true,
-        sameSite: 'none',
-
-      });
-
-      return res.status(200).json("logged in sucessfully");
-    } else {
-      return res.status(401).json({ message: "Password incorrect" });
-    }
-  } catch (error) {
-    next(error)
-  }
-});
 
 
 app.post('/logout', (req, res) => {
-
-  try {
-    res.clearCookie('accessToken');
-
-    return res.json("Logout sccessfully");
-  }
-  catch (error) {
-    next(error);
-  }
-
-})
-
-
-
-app.post('/forget', async (req, res, next) => {
-
-  try {
-
-    const { email } = req.body;
-    console.log(email);
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      next(new Error("User Not Found"));
+    try {
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'None', 
+            path: '/', 
+        });
+        return res.json({ message: "Logout successfully" });
+    } catch (error) {
+        next(error);
     }
-    else {
-
-
-      const token = jwt.sign({ email }, process.env.KEY, { expiresIn: '5m' });
-
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'pharmacyrgukt@gmail.com',
-          pass: process.env.EMAIL_APPCODE
-        }
-      });
-
-      const mailOptions = {
-        from: 'pharmacyrgukt@gmail.com',
-        to: email,
-        subject: 'Forget Password',
-        text: 'Your Password reset link is provided here and \n it will work only for 5 minuetes\n' + 'http://192.168.245.207:3000/forgot/' + token
-      };
-
-      await transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
-      res.sendStatus(200);
-
-    }
-  }
-  catch (err) {
-
-    next(err);
-
-  }
-
-
-})
-
-
-
-
-app.post('/forget/verify', async (req, res, next) => {
-
-
-  try {
-
-    const token = req.body.token;
-    await jwt.verify(token, process.env.KEY, (err, decode) => {
-
-      if (err) {
-        next(err);
-      }
-      else {
-        res.json({ verified: true, email: decode.email });
-        console.log(decode);
-
-      }
-
-    })
-  }
-  catch (err) {
-
-    next(err);
-
-  }
-
 });
 
 
-app.post('/passchange', async (req, res, next) => {
 
-  console.log(req.body);
-   const { token} = req.body;
-   const pass=req.body.data.password;
- 
-   try {
-  
-     await jwt.verify(token, process.env.KEY, async (err, decode) => {
- 
-       if (err) {
-         next(err)
-       }
-       else {
- 
-         const email = decode.email;
-         const hashpassword=await bcrypt.hash(pass,10);
-         console.log(hashpassword)
-         const result = await User.findOneAndUpdate({ email }, { password: hashpassword }, { new: true, runValidators: true });
-         res.status(200).json("Password changed");
- 
-       }
- 
- 
-     })
-   }
-   catch (err) {
-     next(err);
-   }
- 
- })
- 
+
+
+
+
+
+
 app.get('/dashboarddata',async (req,res,next)=>{
 
 
@@ -782,7 +798,7 @@ const lowStockMedicines = await Medicine.find({ available: { $lt: 50 } });
 const currentDate = new Date();
 const oneWeekLater = new Date(currentDate);
 oneWeekLater.setDate(currentDate.getDate() + 7);
-const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater } });
+const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater,$gte: currentDate, } });
 data.expiring_list=expiringMedicines;
 
 
@@ -822,12 +838,14 @@ async function updateMedicineStock() {
 
   try {
       const expiredMedicines = await Stock.find({ expery: { $lt: currentDate } });
-
       for (const expiredMedicine of expiredMedicines) {
-          const medicine = await Medicine.findOne({ _id: expiredMedicine.med_id });
+          const medicine = await Medicine.findOne( {name:expiredMedicine.med_id} );
+          console.log(medicine)
           if (medicine) {
               medicine.available -= expiredMedicine.left_quantity;
-              await medicine.save();
+              if(medicine.available<0)medicine.available=0;
+             let x = await medicine.save();
+             console.log(x);
           }
       }
   } catch (error) {
@@ -837,14 +855,15 @@ async function updateMedicineStock() {
 
 
 
-const job = scheduleJob('0 0 * * *', () => {
-  updateMedicineStock();
-});
+
+setInterval(updateMedicineStock, 86400000);
+
+
 
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  return res.status(500).json({ error: true });
+  return res.status(500).json({ error: err });
 });
 
 
