@@ -61,6 +61,8 @@ app.use(cors({
     next();
 });
 
+app.set("trust proxy",1)
+
 try{
 
 mongoose.connect('mongodb+srv://pharmacyrgukt:' + 'kivsz3X0xwbs2zVW' + '@pharmacy.mgvnn.mongodb.net/pharmacy', {
