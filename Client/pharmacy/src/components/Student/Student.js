@@ -64,7 +64,7 @@ const handleDelete=async ()=>{
  try{   
     
 
-const response=await axios.delete(process.env.REACT_APP_API_URL+'/student?flag=false&batch='+deleteForm.batch,{},{ withCredentials: true, });
+const response=await axios.delete(process.env.REACT_APP_API_URL+'/student?flag=false&batch='+deleteForm.batch,{ withCredentials: true, });
 console.log(response);
 success("Batch Details are Deleted successfully");
  }catch(err)

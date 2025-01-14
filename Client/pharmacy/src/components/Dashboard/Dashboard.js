@@ -156,7 +156,7 @@ const Dashboard = () => {
         <Col md={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }}>
           <h2>Total Transactions</h2>
 
-          <BarGraph data={data.graph_data.reverse()} />
+          <BarGraph data={data.graph_data} />
         </Col>
         <Col md={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }}>
           <h2>Inventory</h2>

@@ -5,6 +5,8 @@
 /Client/pharmacy/node_modules
 /Client/pharmacy/.pnp
 /Client/pharmacy.pnp.js
+/Client/pharmacy/dev.env
+/Server/dev.env
 
 # testing
 /Client/pharmacy/coverage
