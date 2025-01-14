@@ -1,25 +1,30 @@
 import React from 'react';
 import { useContext, useEffect,useState } from "react"
 import Context from "../../context/Context"
-import { Button, Row, Flex, Modal, Upload, Spin,Card } from 'antd';
+import { Button, Row, Flex, Modal, Upload, Spin,Card,Dropdown,Typography,Space } from 'antd';
 import { FaPlus, FaUpload } from 'react-icons/fa';
 import MedicineCard from '../Cards/MedicineCard';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import xldemo from './images/medicine.png'
+import { MdOutlineClear } from "react-icons/md";
+import { DownOutlined,  } from '@ant-design/icons';
 
+
+
+const {Text}=Typography;
 const Medicine = props => {
 
-    const { loading, setLoading, success, error, contextHolder, changeActiveTab ,Medicine_data,setMedData,user} = useContext(Context);
+    const { loading, setLoading, success, error, contextHolder, changeActiveTab ,Medicine_data,setMedData,user,setUser} = useContext(Context);
 
     const [med_form, setMedForm] = useState({ bulk: false, single: false });
     const [fileList, setFileList] = useState([]);
-    const [formdata, setFormData] = useState({ name: '', usage: '' });
+    const [formdata, setFormData] = useState({ name: '', usage: '',category:'Select a category' });
     const [Med_dummy_data,setMedDummyData]=useState([]);
-  
+  const [filter,setFilter]=useState("Select a category")
 
     const handleUploadChange = ({ fileList }) => {
-        setFileList(fileList);
+        setFileList(fileList.reverse());
     };
 
 
@@ -40,15 +45,23 @@ const Medicine = props => {
         }
     
         changeActiveTab('MEDICINE');
-    }, [Medicine_data,props.param])
+    }, [Medicine_data,props.param,user])
 
+
+
+const handleCategoryChange=(key)=>{
+
+const filterdata=Medicine_data.filter(each=>each.category==key)
+setFilter(key)
+setMedDummyData(filterdata);
+}
 
 
     const handleFormUpload = async () => {
 
 
 
-if((formdata.name && formdata.usage) || med_form.bulk){
+if((formdata.name && formdata.usage && formdata.category!="Select a category") || med_form.bulk){
 
 
         setLoading(true);
@@ -60,10 +73,10 @@ if((formdata.name && formdata.usage) || med_form.bulk){
         if(!med_form.bulk){
         form_Data.append('name', formdata.name);
         form_Data.append('useage', formdata.usage);
+        form_Data.append('category',formdata.category);
     }
 
         try {
-            console.log(form_Data);
             const result = await axios.post(process.env.REACT_APP_API_URL+'/medicine', form_Data,{ withCredentials: true, });
             console.log(result);
             setLoading(false);
@@ -74,7 +87,9 @@ if((formdata.name && formdata.usage) || med_form.bulk){
 
                }
             success("Medicine Added Succesfully");
+            setUser(prev=>({...prev}));
             setFileList([]);
+            
             setLoading(true);
             const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', { name: "" });
       
@@ -110,7 +125,29 @@ if((formdata.name && formdata.usage) || med_form.bulk){
                 </Flex>:null
 }
                 <>
+                
                 <h3 className='p-2'>{!props.param?"Recent Medicines":"search result for "+props.param }</h3><br></br>
+                {!props.param?<>
+                <Text style={{fontSize:15}}><b>Filter:</b>   </Text>
+                <Dropdown menu={{ items: [{ key: "Tablets", label: "Tablets" }, { key: "Syrups", label: "Syrups" }, { key: "Injections", label: "Injections" },{key:"Ointments",label:"Ointments"}, { key: "Others", label: "Others" }], onClick: ({ key }) => { handleCategoryChange(key) } }}>
+                            <Button>
+                                <Space>
+                                    {
+                                        filter == "Select a category" ?
+                                            <Text >{filter}
+                                                <DownOutlined /></Text>
+                                            :
+                                            <Text >{filter}
+                                                <MdOutlineClear className="mx-2" onClick={() => {setFilter("Select a category"); setMedDummyData(Medicine_data)}} />
+                                            </Text>
+                                    }
+                                </Space>
+                            </Button>
+                        </Dropdown>
+                        </>
+                        :null
+}
+                
                 <Row>
                     {!loading ?
                         <Flex gap="small" justify='space-evenly'  wrap>
@@ -128,9 +165,25 @@ if((formdata.name && formdata.usage) || med_form.bulk){
                 <Modal open={med_form.single} footer={null} onCancel={() => { setMedForm((prev) => ({ ...prev, single: false })) }}>
                     <Spin tip="Loading...." size='large' spinning={loading}>
                         <h1 className='mt-3'>Add New Medicine</h1>
-                        <Flex justify='space-evenly' gap={10} align="end" >
+                        <Flex justify='space-evenly' vertical gap={10} align="start" >
                             <TextField label="name" variant="outlined" value={formdata.name} onChange={(e) => { setFormData((prev) => ({ ...prev, name: e.target.value })) }} />
                             <TextField label="usage" variant="outlined" value={formdata.usage} onChange={(e) => { setFormData((prev) => ({ ...prev, usage: e.target.value })) }} />
+                            <Dropdown menu={{ items: [{ key: "Tablets", label: "Tablets" }, { key: "Syrups", label: "Syrups" }, { key: "Injections", label: "Injections" },{key:"Ointments",label:"Ointments"}, { key: "Others", label: "Others" }], onClick: ({ key }) => { setFormData(prev => ({ ...prev, category: key })) } }}>
+                            <Button>
+                                <Space>
+                                    {
+                                        formdata.category == "Select a category" ?
+                                            <Text disabled>{formdata.category}
+                                                <DownOutlined /></Text>
+                                            :
+                                            <Text >{formdata.category}
+                                                <MdOutlineClear className="mx-2" onClick={() => setFormData(prev => ({ ...prev, category: "Select a category" }))} />
+                                            </Text>
+                                    }
+                                </Space>
+                            </Button>
+                        </Dropdown>
+
                         </Flex>
                         <Upload
                             multiple

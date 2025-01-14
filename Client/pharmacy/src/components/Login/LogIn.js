@@ -90,6 +90,7 @@ const handleLogout=async ()=>{
      success("logged out successfully");
      setUser(null);
      setLoading(false);
+     history.push('/');
   
   }
   catch{

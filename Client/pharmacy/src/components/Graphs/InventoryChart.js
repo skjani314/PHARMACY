@@ -8,9 +8,12 @@ const InventoryChart = props => {
   
 
   const data = [
-    { name: 'Total Products', value: props.data.total_medicines,color:'#0088FE' },
-    { name: 'Expired Products', value: props.data.expery,color:'#00C49F' },
-    { name: 'Out of Stock', value: props.data.shortage ,color:'#FFBB28'},
+    { name: props.data[0]._id, value: props.data[0].totalAvailable,color:'#FF5733' },
+    { name: props.data[1]._id, value: props.data[1].totalAvailable,color:'#33C1FF' },
+    { name: props.data[2]._id, value: props.data[2].totalAvailable,color:'#FFC733'},
+    { name: props.data[3]._id, value: props.data[3].totalAvailable,color:'#33FF57'},
+    { name: props.data[4]._id, value: props.data[4].totalAvailable,color:'#A833FF'},
+
   ];
 
   const renderActiveShape = (props) => {

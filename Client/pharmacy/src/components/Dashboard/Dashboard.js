@@ -26,7 +26,7 @@ const Dashboard = () => {
 
   const { Medicine_data } = useContext(Context);
   const [see_all, setSeeAll] = useState(null);
-  const [data, setData] = useState({ total_students: 0, benfited_students: 0, stock: 0, graph_data: [], shortage_list: [], expiring_list: [], month_trans: 0 }
+  const [data, setData] = useState({ total_students: 0, benfited_students: 0, stock: 0, graph_data: [], shortage_list: [], expiring_list: [], daily_count: 0 ,inventory:[{_id:'null',totalAvailable:0},{_id:'null',totalAvailable:0},{_id:'null',totalAvailable:0},{_id:'null',totalAvailable:0},{_id:'null',totalAvailable:0},]}
   )
 
   useEffect(() => {
@@ -36,9 +36,9 @@ const Dashboard = () => {
       try {
 
         const result = await axios.get(process.env.REACT_APP_API_URL+'/dashboarddata',{ withCredentials: true, });
-        const x = result.data.graph_data.filter(each => each._id == (new Date().getMonth()) + 1)
+        console.log(result)
 
-        setData({ ...result.data, month_trans: x[0].count })
+        setData({ ...result.data})
 
       }
       catch (err) {
@@ -82,7 +82,7 @@ const Dashboard = () => {
               <Text>
                 <b>Transactions</b>
               </Text>
-              <Text style={{ fontSize: 20 }}> {data.month_trans}  <Text style={{ fontSize: 12 }}>(For This Month)</Text>
+              <Text style={{ fontSize: 20 }}> {data.daily_count}  <Text style={{ fontSize: 12 }}>(Today)</Text>
               </Text>
             </Flex>
           </Flex>
@@ -156,17 +156,20 @@ const Dashboard = () => {
         <Col md={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }}>
           <h2>Total Transactions</h2>
 
-          <BarGraph data={data.graph_data} />
+          <BarGraph data={data.graph_data.reverse()} />
         </Col>
         <Col md={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }}>
           <h2>Inventory</h2>
 
           <Flex vertical gap={10}  >
-            <InventoryChart data={{ total_medicines: Medicine_data.length, shortage: data.shortage_list.length, expery: data.expiring_list.length }} />
+            <InventoryChart data={data.inventory} />
             <Flex wrap gap={10}>
-              <Text><FaSquareFull color='#FFBB28' /> <b>out of Stock</b></Text>
-              <Text><FaSquareFull color='#0088FE' /> <b>Total Product</b></Text>
-              <Text><FaSquareFull color='#00C49F' /> <b>Expired Product</b></Text>
+              <Text><FaSquareFull color='#FF5733' /> <b>{data.inventory[0]._id}</b></Text>
+              <Text><FaSquareFull color='#33C1FF' /> <b>{data.inventory[1]._id}</b></Text>
+              <Text><FaSquareFull color='#FFC733' /> <b>{data.inventory[2]._id}</b></Text>
+              <Text><FaSquareFull color='#33FF57' /> <b>{data.inventory[3]._id}</b></Text>
+              <Text><FaSquareFull color='#A833FF' /> <b>{data.inventory[4]._id}</b></Text>
+
             </Flex>
           </Flex>
         </Col>

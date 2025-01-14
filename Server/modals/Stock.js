@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const StockSchema = new mongoose.Schema(
     {
-        date: { type: Date, default: Date.now()},
+        date: { type: Date, default: Date.now},
         med_id: { type: String, required: true },
         imported_quantity: { type: Number, required: true },
         left_quantity: { type: Number, required: true },

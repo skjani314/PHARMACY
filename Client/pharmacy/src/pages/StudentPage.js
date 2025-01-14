@@ -32,7 +32,7 @@ const StudentPage = props => {
                             <Sidebar />
                         </div>
                         <div className="main-content">
-                            <Student   search_result={search_result.slice(1)} student={search_result[0]} />
+                            <Student   search_result={search_result.transactions} student={search_result.student} />
                         </div>
                     </div>
 

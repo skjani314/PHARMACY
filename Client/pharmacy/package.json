@@ -1,7 +1,7 @@
 {
   "name": "pharmacy",
   "version": "0.1.0",
-  "proxy": "https://pharmacy-dni5.onrender.com",
+  "proxy": "http://localhost:3400",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",

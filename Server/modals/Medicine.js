@@ -5,6 +5,7 @@ const MedicineSchema = new mongoose.Schema(
     {
         name: {type:String,required:true}, 
         available:{type:Number}, 
+        category:{type:String,required:true},
         useage: String, 
         img: {
             data: Buffer,

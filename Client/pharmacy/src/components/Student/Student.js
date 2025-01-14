@@ -77,7 +77,7 @@ console.log(err);
 
 
     return (
-        <div>
+        <div className='p-2'>
             <h1 className="p-3">Students</h1>
             <Flex gap={10} justify='end' className='mb-2' wrap>
                 <Button  onClick={() => { setStudentForm((prev) => ({ ...prev, single: true })) }} ><FaPlus /> Add Student</Button>
@@ -85,9 +85,13 @@ console.log(err);
                 <Button onClick={()=>{setDeleteForm((prev)=>({...prev,flag:true}))}}><FaTrash></FaTrash> Delete</Button>
             </Flex>
 
-{props.search_result.length>0?<><h2>Search Result for {props.student.name}({props.student.stu_id})</h2>
+{props.search_result && props.search_result.length>0 && props.student?<><h2>Search Result for {props.student.name}({props.student.stu_id})</h2>
 
-<Issuetable rowsData={props.search_result} student={props.student}/></>:<Flex justify='center'><img className='p-2 m-2 img-fluid' src="https://thumbs.dreamstime.com/b/no-found-symbol-unsuccessful-search-vecotr-upset-magnifying-glass-cute-not-zoom-icon-suitable-results-oops-page-failure-122786031.jpg"></img></Flex>}
+<Issuetable rowsData={props.search_result} student={props.student}/>
+
+
+</>:<Flex justify='center'><img className='p-2 m-2 img-fluid' src="https://thumbs.dreamstime.com/b/no-found-symbol-unsuccessful-search-vecotr-upset-magnifying-glass-cute-not-zoom-icon-suitable-results-oops-page-failure-122786031.jpg"></img></Flex>}
+           
             <Modal open={student_form.single} footer={null} onCancel={() => { setStudentForm((prev) => ({ ...prev, single: false })) }}>
                 <Spin tip="Loading...." size='large' spinning={loading}>
                     <h1 className='mt-3'>Add New Student</h1>

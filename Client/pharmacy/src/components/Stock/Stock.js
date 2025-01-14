@@ -45,7 +45,7 @@ console.log(workbook)
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
 const Stock = props => {
-    const { loading, setLoading, success, error, contextHolder, changeActiveTab, Medicine_data } = useContext(Context);
+    const { loading, setLoading, success, error, contextHolder, changeActiveTab, Medicine_data ,user,setUser} = useContext(Context);
     const [stock_form, setStockForm] = useState({ bulk: false, single: false });
     const [fileList, setFileList] = useState([]);
     const [formdata, setFormData] = useState({ imported_quantity: '', expery: '', med_id: '' });
@@ -78,7 +78,7 @@ const Stock = props => {
 
         rowsData()
 
-    }, []);
+    }, [user]);
 
     console.log(rowsData)
     const onDatesChange = async (values, dateStrings) => {
@@ -107,6 +107,7 @@ const Stock = props => {
             const result = await axios.post(process.env.REACT_APP_API_URL+'/stock', form_Data, { withCredentials: true });
             console.log(result);
             success("Stock Added Successfully");
+            setUser(prev=>({...prev}));
             setFormData((prev) => ({ imported_quantity: '', expery: '', med_id: '' }))
             setFileList([]);
             setStockForm((prev) => ({ bulk: false, single: false }))

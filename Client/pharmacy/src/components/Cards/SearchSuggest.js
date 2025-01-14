@@ -15,6 +15,7 @@ const SearchSuggest = props => {
         if(!props.transaction){
         props.setSearchValue("");}
         else{
+
             props.setFormData((prev)=>({...prev,med_id:props.data.name}))
         }
     }

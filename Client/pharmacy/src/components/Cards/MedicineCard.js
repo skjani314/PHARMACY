@@ -59,7 +59,7 @@ const [usage,setUsage]=useState(null)
         setLoading(true);
         console.log(props.data.name);
         try {
-            const result = await axios.delete(process.env.REACT_APP_API_URL+`/medicine?id=${props.data.name}`,{},{ withCredentials: true, });
+            const result = await axios.delete(process.env.REACT_APP_API_URL+`/medicine?id=${props.data.name}`,{ withCredentials: true, });
             console.log(result);
             success("deleted succesfully");
             setLoading(true);

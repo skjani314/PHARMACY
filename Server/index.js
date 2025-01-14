@@ -27,7 +27,7 @@ const storage=multer.diskStorage({
     cb(null,'/tmp/');
   },
   filename:(req,file,cb)=>{
-    cb(null,Date.now()+path.extname(file.originalname));
+    cb(null,file.originalname);
   }
 
 });
@@ -276,7 +276,8 @@ app.post('/passchange', async (req, res, next) => {
         data: each.img.data.toString('base64'),
         contentType: each.img.contentType,
       },
-      id:each._id
+      id:each._id,
+      category:each.category
     }))
     if(result.length>0){
 res.set('Content-Type', result[0].img.contentType);}
@@ -424,10 +425,10 @@ app.post('/medicine', async (req, res, next) => {
 
   try {
 
-    const { name, useage } = req.body;
+    const { name, useage,category } = req.body;
 
-if(name && useage){
-    await Medicine.create({ name, available: 0, useage, img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
+if(name && useage && category!="Select a category"){
+    await Medicine.create({ name, available: 0, useage, category,img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
     console.log("medicine added");
     res.status(200).send("medicine added succesfully");
     fs.unlinkSync(req.files[0].path);
@@ -445,10 +446,16 @@ else{
     i++;
   })
 
+
+  for(i=0;i<req.files.length;i++){ 
+    if(req.files[i])
+    fs.unlinkSync(req.files[i].path);
+  
+  }
+
 const bulk_response=await Medicine.insertMany(data);
 console.log(bulk_response);
-for(i=0;i<req.files.length;i++){ fs.unlinkSync(req.files[i].path);
-}
+
 res.json(bulk_response);
 
 }
@@ -611,18 +618,29 @@ app.post('/transaction', async (req, res, next) => {
 
   try {
 
-    const { stu_id, med_id, reason, quantity } = req.body;
-    const med_data=await Medicine.findOne({name:med_id});
-    const left=med_data.available-quantity;
+    const { stu_id, reason } = req.body;
 
-    if(left<0)next(new Error("unable to process request"));
-    else{
-    const up_result = await Medicine.findOneAndUpdate({name:med_id}, { available: left }, { new: true });
+const med_id=JSON.parse(req.body.med_id);
+let f=0;
+
+await Promise.all(med_id.map(async (each)=>{
+
+  const med_data=await Medicine.findOne({name:each.med_id});
+  const left=med_data.available-each.quantity;
+
+  if(left>=0){f++;each.left=left;}
+
+}))
+
+if(f==med_id.length){
+const bulk_result=await Promise.all(med_id.map(async (each)=>{
+  
+    const up_result = await Medicine.findOneAndUpdate({name:each.med_id}, { available: each.left }, { new: true });
 
 
-    const transactions=await Stock.find({med_id}).sort({expery:1});
+    const transactions=await Stock.find({med_id:each.med_id}).sort({expery:1});
     
-  let x=quantity;
+  let x=each.quantity;
   let temp=0;
   console.log(transactions);
 console.log(x);
@@ -643,12 +661,17 @@ console.log(x);
           }
 
       }
+    
+
+  }))
 
 
-    const result = await Transactions.create({ stu_id, med_id, reason, quantity });
-    res.json(result);
-    }
-
+  const result = await Transactions.create({ stu_id, med_id, reason});
+  res.json(result)
+}
+else{
+  next(new Error("unable to process request"));
+}
   } 
   catch (err) {
 
@@ -671,7 +694,7 @@ app.get('/transaction', async (req, res, next) => {
     const response = await Transactions.find({ stu_id }).sort({date:-1});
 
    
-    const student = await Student.find({ stu_id })
+    const student = await Student.findOne({ stu_id })
 
     res.json({ student, response });
     }
@@ -683,7 +706,7 @@ app.get('/transaction', async (req, res, next) => {
       const result=await Promise.all(
         response.map(async (each)=>{
           const stu_data=await Student.findOne({stu_id:each.stu_id});
-          return {...each,name:stu_data.name}
+          return {...each,stu_data:stu_data}
         })
       )
       res.json(result);
@@ -695,7 +718,7 @@ app.get('/transaction', async (req, res, next) => {
       const result=await Promise.all(
         response.map(async (each)=>{
           const stu_data=await Student.findOne({stu_id:each.stu_id});
-          return {...each,name:stu_data.name}
+          return {...each,stu_data}
         })
       )
       res.json(result);
@@ -816,6 +839,29 @@ res.set('Content-Type', lowStockMedicines[0].img.contentType);}
 
 data.shortage_list=low_med_data;
 
+const startOfDay = new Date();
+startOfDay.setHours(0, 0, 0, 0);
+
+const endOfDay = new Date();
+endOfDay.setHours(23, 59, 59, 999); 
+
+const day_count = await Transactions.find({
+  date: {
+    $gte: startOfDay,  
+    $lte: endOfDay    
+  }
+});
+
+data.daily_count=day_count.length;
+const inventory = await Medicine.aggregate([
+  {
+      $group: {
+          _id: "$category", // Group by category
+          totalAvailable: { $sum: "$available" }, // Sum the 'available' field
+      },
+  },
+]);
+data.inventory=inventory;
 res.json(data);
 
 

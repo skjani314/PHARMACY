@@ -77,15 +77,16 @@ error("select student ID");
 }
 
 const handleSearchResultClick=async (value)=>{
-
+  
     setLoading(true);
     setSerachResult([]);
     setSearchValue("");
     try{
     const result=await axios.get(process.env.REACT_APP_API_URL+'/transaction?stu_id='+value,{ withCredentials: true, });
-    props.setSearachResult([...result.data.student,...result.data.response]);
+    console.log(result)
+    props.setSearachResult({student:result.data.student,transactions:[...result.data.response]});
     }catch(err)
-    {
+    {    console.log(err)
         error("something went wrong");
     }
 setLoading(false);
