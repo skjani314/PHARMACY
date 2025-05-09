@@ -1,4 +1,7 @@
- import Stock from "../modals/Stock";
+ import Stock from "../modals/Stock.js";
+import fs from 'fs';
+import xlsx from 'xlsx';
+import { promise } from 'bcrypt/promises.js';
 
 
 

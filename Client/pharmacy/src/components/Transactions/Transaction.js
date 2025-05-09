@@ -62,7 +62,7 @@ const Transaction = props => {
 
             setLoading(true);
             try {
-                const result = await axios.get(process.env.REACT_APP_API_URL + '/transaction', { withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/transaction/get-transaction', { withCredentials: true, });
                 setTableData([...result.data]);
                 console.log(result.data)
             }
@@ -104,7 +104,7 @@ const Transaction = props => {
         form_Data.append('med_id', JSON.stringify(arrTran));
         try {
 
-            const result = await axios.post(process.env.REACT_APP_API_URL + '/transaction', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL + '/api/transaction/add-transaction', form_Data, { withCredentials: true });
             console.log(result);
             success("Medicine Issued Succesfully");
 
@@ -130,7 +130,7 @@ const Transaction = props => {
 
         setLoading(true);
         try {
-            const result = await axios.get(process.env.REACT_APP_API_URL + `/transaction?start=${datseRange.start}&end=${datseRange.end}`, { withCredentials: true, });
+            const result = await axios.get(process.env.REACT_APP_API_URL + `/api/transaction/get-transaction?start=${datseRange.start}&end=${datseRange.end}`, { withCredentials: true, });
             setTableData([...result.data])
             console.log(result.data)
         }
@@ -146,7 +146,7 @@ const Transaction = props => {
         if (e.target.value != "") {
             try {
 
-                const result = await axios.get(process.env.REACT_APP_API_URL + '/student?stu_id=' + e.target.value, { withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/student/get-student?stu_id=' + e.target.value, { withCredentials: true, });
                 setstuSearch([...result.data]);
             } catch {
                 error("something went wrong");

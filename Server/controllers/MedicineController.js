@@ -1,4 +1,7 @@
-import Medicine from '../models/Medicine.js';
+import fs from 'fs';
+import xlsx from 'xlsx';
+import { promise } from 'bcrypt/promises.js';
+import Medicine from '../modals/Medicine.js';
 
 
 export const getMedicines = async (req, res, next) => {

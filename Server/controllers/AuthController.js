@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../modals/User';
+import User from '../modals/User.js';
+import nodemailer from 'nodemailer';
 
 
 export const Login= async (req, res, next) => {
@@ -197,3 +198,136 @@ export const PassChange = async (req, res, next) => {
   
   
   }
+
+
+ export const Logout=async (req, res) => {
+    try {
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'None', 
+            path: '/', 
+        });
+        return res.json({ message: "Logout successfully" });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getDashboardData = async (req,res,next)=>{
+
+
+try{
+
+
+const data={total_students:0,benfited_students:0,stock:0,graph_data:[],shortage_list:[],expiring_list:[]}
+
+
+
+const benfited_stu=await Transactions.aggregate([
+  {
+      $group: {
+          _id: "$stu_id",
+          count: { $sum: 1 }
+      }
+  },
+  {
+      $match: {
+          count: { $gte: 1 }
+      }
+  }
+]);
+data.benfited_students=benfited_stu.length;
+const total_stu=await Student.find()
+data.total_students=total_stu.length
+
+
+const graph_data=await Transactions.aggregate([
+  {
+      $match: {
+          date: {
+              $gte: new Date(new Date().getFullYear() - 1, 0, 1), // Start of last year
+              $lt: new Date() // Current date
+          }
+      }
+  },
+  {
+      $group: {
+          _id: {
+              $month: "$date" // Group by month
+          },
+          count: { $sum: 1 },
+          totalQuantity: { $sum: "$quantity" }
+      }
+  }
+])
+data.graph_data=graph_data;
+const allStock = await Stock.find();
+let totalImported = 0;
+let totalLeft = 0;
+
+allStock.forEach(stockItem => {
+    totalImported += stockItem.imported_quantity;
+    totalLeft += stockItem.left_quantity;
+});
+const overallPercentage = (totalLeft / totalImported) * 100;
+data.stock=overallPercentage;
+
+const lowStockMedicines = await Medicine.find({ available: { $lt: 50 } });
+const currentDate = new Date();
+const oneWeekLater = new Date(currentDate);
+oneWeekLater.setDate(currentDate.getDate() + 7);
+const expiringMedicines = await Stock.find({ expery: { $lte: oneWeekLater,$gte: currentDate, } });
+data.expiring_list=expiringMedicines;
+
+
+const low_med_data=lowStockMedicines.map((each)=>({
+  name:each.name,
+  available:each.available,
+  img:{
+    data: each.img.data.toString('base64'),
+    contentType: each.img.contentType,
+  },
+  id:each._id
+}))
+if(lowStockMedicines.length>0){
+res.set('Content-Type', lowStockMedicines[0].img.contentType);}
+
+data.shortage_list=low_med_data;
+
+const startOfDay = new Date();
+startOfDay.setHours(0, 0, 0, 0);
+
+const endOfDay = new Date();
+endOfDay.setHours(23, 59, 59, 999); 
+
+const day_count = await Transactions.find({
+  date: {
+    $gte: startOfDay,  
+    $lte: endOfDay    
+  }
+});
+
+data.daily_count=day_count.length;
+const inventory = await Medicine.aggregate([
+  {
+      $group: {
+          _id: "$category", // Group by category
+          totalAvailable: { $sum: "$available" }, // Sum the 'available' field
+      },
+  },
+]);
+data.inventory=inventory;
+res.json(data);
+
+
+}
+catch(err)
+{
+  next(err);
+}
+
+
+
+
+}

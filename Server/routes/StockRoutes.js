@@ -1,14 +1,14 @@
 import express from 'express';
-import { authenticate } from '../middlewares/AdminVerify';
-import { upload_file } from '../middlewares/multer';
-import { addStock, getStock } from '../controllers/StockController';
+import { authenticate } from '../middlewares/AdminVerify.js';
+import { upload_file } from '../middlewares/multer.js';
+import { addStock, getStock } from '../controllers/StockController.js';
 
 
 
 const StockRoutes= express.Router();
 
-app.post('/add-stock',upload_file.array('img'),addStock);
-app.get('/get-stock',getStock);
+StockRoutes.post('/add-stock',upload_file.array('img'),addStock);
+StockRoutes.get('/get-stock',getStock);
 
 
 export default StockRoutes;

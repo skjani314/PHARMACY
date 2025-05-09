@@ -77,7 +77,7 @@ if((formdata.name && formdata.usage && formdata.category!="Select a category") |
     }
 
         try {
-            const result = await axios.post(process.env.REACT_APP_API_URL+'/medicine', form_Data,{ withCredentials: true, });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/medicine/add-medicine', form_Data,{ withCredentials: true, });
             console.log(result);
             setLoading(false);
                if(!med_form.bulk){
@@ -91,7 +91,7 @@ if((formdata.name && formdata.usage && formdata.category!="Select a category") |
             setFileList([]);
             
             setLoading(true);
-            const med_data = await axios.get(process.env.REACT_APP_API_URL+'/medicine', { name: "" });
+            const med_data = await axios.get(process.env.REACT_APP_API_URL+'/api/medicine/get-medicine', { name: "" });
       
                   setMedData([...med_data.data]);
                   setLoading(false);

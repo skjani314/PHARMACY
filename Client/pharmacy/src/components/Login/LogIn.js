@@ -8,7 +8,7 @@ import Context from '../../context/Context';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-function LogIn() {
+function LogIn() { 
 const [isVisible, setIsVisible] = useState(false);  
 const [LogData,setLogdata]=useState({email:'',password:''});
 const [psicon,setPsicon]=useState(false);
@@ -32,7 +32,7 @@ const showModal = () => {
     setLoading(true);
   
    try{
-  const result=await axios.post(process.env.REACT_APP_API_URL+'/forget',{email:forgetpass.email})
+  const result=await axios.post(process.env.REACT_APP_API_URL+'/api/auth/forget',{email:forgetpass.email})
   console.log(result);
   success("Reset Link sent to Mail Successfully");
   setLoading(false);
@@ -62,11 +62,11 @@ const handleLogData=(e)=>
       setLoading(true);
        try{
         
-       await axios.post(process.env.REACT_APP_API_URL+'/login',LogData, { withCredentials: true })
+       await axios.post(process.env.REACT_APP_API_URL+'/api/auth/login',LogData, { withCredentials: true })
     
         setLogdata({email:'',password:''});
         handleCancel();
-        const result= await axios.post(process.env.REACT_APP_API_URL+'/get-user',{},{ withCredentials: true, });
+        const result= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/get-user',{},{ withCredentials: true, });
         setUser(result.data);
         setLoading(false);
         success("Logged In successfully");
@@ -86,7 +86,7 @@ const handleLogout=async ()=>{
   setLoading(true);
   try{
   
-    await axios.post(process.env.REACT_APP_API_URL+'/logout',{},{ withCredentials: true, })
+    await axios.post(process.env.REACT_APP_API_URL+'/api/auth/logout',{},{ withCredentials: true, })
      success("logged out successfully");
      setUser(null);
      setLoading(false);

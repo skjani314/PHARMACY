@@ -1,8 +1,7 @@
 import express from 'express';
-import { AddMedicine, deleteMedicine, getMedicines, updateMedicine } from '../controllers/MedicineController';
-import { upload_file } from '../middleware/multer';
-import { authenticate } from '../middlewares/AdminVerify';
-
+import { AddMedicine, deleteMedicine, getMedicines, updateMedicine } from '../controllers/MedicineController.js';
+import { authenticate } from '../middlewares/AdminVerify.js';
+import { upload_file } from '../middlewares/multer.js';
 
 const MedicineRoutes = express.Router();
 

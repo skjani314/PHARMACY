@@ -41,7 +41,7 @@ const Student = props => {
         try {
 
 
-            const result = await axios.post(process.env.REACT_APP_API_URL+'/student', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/student/add-student', form_Data, { withCredentials: true });
             console.log(result);
             success("Student Added Successfully");
             setFormData((prev) => ({ stu_id: '', name: '', class_name: '', dorm: '' }))
@@ -64,7 +64,7 @@ const handleDelete=async ()=>{
  try{   
     
 
-const response=await axios.delete(process.env.REACT_APP_API_URL+'/student?flag=false&batch='+deleteForm.batch,{ withCredentials: true, });
+const response=await axios.delete(process.env.REACT_APP_API_URL+'/api/student/delete-student?flag=false&batch='+deleteForm.batch,{ withCredentials: true, });
 console.log(response);
 success("Batch Details are Deleted successfully");
  }catch(err)

@@ -35,7 +35,7 @@ const Dashboard = () => {
 
       try {
 
-        const result = await axios.get(process.env.REACT_APP_API_URL+'/dashboarddata',{ withCredentials: true, });
+        const result = await axios.get(process.env.REACT_APP_API_URL+'/api/auth/dashboarddata',{ withCredentials: true, });
         console.log(result)
 
         setData({ ...result.data})
