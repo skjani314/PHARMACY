@@ -2,7 +2,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../modals/User.js';
 import nodemailer from 'nodemailer';
-
+import Transactions from '../modals/Transaction.js';
+import Student from '../modals/Student.js';
+import Stock from '../modals/Stock.js';
+import Medicine from '../modals/Medicine.js';
 
 export const Login= async (req, res, next) => {
     try {

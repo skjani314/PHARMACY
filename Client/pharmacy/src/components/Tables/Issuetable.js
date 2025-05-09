@@ -40,9 +40,9 @@ const [isModel,setModel]=React.useState(false);
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.rowsData.map((row) => (
+            {props.rowsData.map((row,index) => (
               <TableRow
-                key={row._id}
+                key={index}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">

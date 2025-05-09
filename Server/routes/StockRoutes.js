@@ -7,7 +7,7 @@ import { addStock, getStock } from '../controllers/StockController.js';
 
 const StockRoutes= express.Router();
 
-StockRoutes.post('/add-stock',upload_file.array('img'),addStock);
+StockRoutes.post('/add-stock',addStock);
 StockRoutes.get('/get-stock',getStock);
 
 

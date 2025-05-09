@@ -118,7 +118,7 @@ setLoading(false);
                                 {
                                     search_result.map((each,index)=>(
                                         !page?
-                                        <SearchSuggest key={each.id} data={each} setSerachResult={setSerachResult}  setSearchValue={ setSearchValue}/>
+                                        <SearchSuggest key={index} data={each} setSerachResult={setSerachResult}  setSearchValue={ setSearchValue}/>
                                         :<Flex key={index} vertical className='m-1 p-2 search-suggestion' style={{background:"white",width:"100%"}} onClick={()=>handleSearchResultClick(each.stu_id)}>
                                         <Text>{each.stu_id}</Text>
                                         <Text style={{fontSize:11}}>{each.name}</Text>

@@ -5,7 +5,7 @@ import { AddTransaction, GetTransaction } from '../controllers/TransactionContro
 
 const TransactionRoutes = express.Router();
 
-TransactionRoutes.post('/transaction', AddTransaction)
-TransactionRoutes.get('/transaction', GetTransaction);
+TransactionRoutes.post('/add-transaction', AddTransaction)
+TransactionRoutes.get('/get-transaction', GetTransaction);
 
 export default TransactionRoutes;

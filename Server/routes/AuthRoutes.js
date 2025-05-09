@@ -14,6 +14,6 @@ AuthRoutes.post('/passchange', PassChange)
 AuthRoutes.post('/get-user', getUser)
 // AuthRoutes.post('/register', register);
 AuthRoutes.post('/logout',Logout);
-AuthRoutes.get('/dashboarddata',getDashboardData);
+AuthRoutes.get('/dashboarddata',authenticate,getDashboardData);
 
 export default AuthRoutes;

@@ -1,6 +1,8 @@
 import Transactions from "../modals/Transaction.js";
 import { promise } from 'bcrypt/promises.js';
-
+import Student from "../modals/Student.js";
+import Stock from "../modals/Stock.js";
+import Medicine from "../modals/Medicine.js";
 
 export const AddTransaction = async (req, res, next) => {
 

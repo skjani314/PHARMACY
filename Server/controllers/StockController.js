@@ -2,7 +2,7 @@
 import fs from 'fs';
 import xlsx from 'xlsx';
 import { promise } from 'bcrypt/promises.js';
-
+import Medicine from "../modals/Medicine.js";
 
 
  export const addStock = async (req, res, next) => {
