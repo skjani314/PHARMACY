@@ -21,10 +21,7 @@ app.use(cors({
           callback(new Error('Not allowed by CORS')); 
       }
   },
-      methods:["POST","GET","PUT","DELETE"],
-      credentials: true,
-      allowedHeaders: ['Content-Type', 'Authorization']
-  
+      methods:["POST","GET","PUT","DELETE"],  
     }))
 
 
@@ -33,7 +30,7 @@ app.use(cors({
 
 // app.use(express.urlencoded({ extended: true }));
 // app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(upload_file.array("img"));
 
 app.set("trust proxy",1);
