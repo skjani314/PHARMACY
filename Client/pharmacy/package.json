@@ -1,7 +1,7 @@
 {
   "name": "pharmacy",
   "version": "0.1.0",
-  "proxy": "http://localhost:3400",
+  "proxy": "https://pharmacy-v5sq.vercel.app",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
