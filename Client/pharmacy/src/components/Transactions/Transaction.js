@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState } from 'react';
 import Context from '../../context/Context';
 import React from 'react';
-import { Modal, Flex, Button, Typography, DatePicker } from 'antd';
+import { Modal, Flex, Button, Typography, DatePicker, Spin } from 'antd';
 import { FaDownload, FaPlus } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
@@ -48,7 +48,7 @@ const Transaction = props => {
     const [Transactionform, setTransactionForm] = useState(false);
     const [formdata, setFormData] = useState({ stu_id: '', quantity: '', reason: '', med_id: '' });
     const [arrTran, setArrTran] = useState([])
-    const { loading, setLoading, success, error, contextHolder, changeActiveTab, Medicine_data,user,setUser } = useContext(Context);
+    const { loading, setLoading, success, error, contextHolder, changeActiveTab, Medicine_data, user, setUser } = useContext(Context);
 
     const [search_result, setSerachResult] = useState([]);
     const [stuSearch_result, setstuSearch] = useState([]);
@@ -62,11 +62,12 @@ const Transaction = props => {
 
             setLoading(true);
             try {
-                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/transaction/get-transaction',  {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
-          "Content-Type": "application/json",
-        }});
+                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/transaction/get-transaction', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                        "Content-Type": "application/json",
+                    }
+                });
                 setTableData([...result.data]);
                 console.log(result.data)
             }
@@ -108,7 +109,12 @@ const Transaction = props => {
         form_Data.append('med_id', JSON.stringify(arrTran));
         try {
 
-            const result = await axios.post(process.env.REACT_APP_API_URL + '/api/transaction/add-transaction', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL + '/api/transaction/add-transaction', form_Data, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    "Content-Type": "application/json",
+                }
+            });
             console.log(result);
             success("Medicine Issued Succesfully");
 
@@ -116,7 +122,7 @@ const Transaction = props => {
             error("something went wrong");
         }
         setLoading(false);
-        setUser(prev=>({...prev}));
+        setUser(prev => ({ ...prev }));
         setFormData({ stu_id: '', quantity: '', reason: '', med_id: '' })
         setTransactionForm(false);
         setArrTran([])
@@ -134,11 +140,12 @@ const Transaction = props => {
 
         setLoading(true);
         try {
-            const result = await axios.get(process.env.REACT_APP_API_URL + `/api/transaction/get-transaction?start=${datseRange.start}&end=${datseRange.end}`,  {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
-          "Content-Type": "application/json",
-        }});
+            const result = await axios.get(process.env.REACT_APP_API_URL + `/api/transaction/get-transaction?start=${datseRange.start}&end=${datseRange.end}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    "Content-Type": "application/json",
+                }
+            });
             setTableData([...result.data])
             console.log(result.data)
         }
@@ -154,11 +161,12 @@ const Transaction = props => {
         if (e.target.value != "") {
             try {
 
-                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/student/get-student?stu_id=' + e.target.value,  {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
-          "Content-Type": "application/json",
-        }});
+                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/student/get-student?stu_id=' + e.target.value, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                        "Content-Type": "application/json",
+                    }
+                });
                 setstuSearch([...result.data]);
             } catch {
                 error("something went wrong");
@@ -194,49 +202,51 @@ const Transaction = props => {
             </Flex>
             <RecentTransactionsTable rowsData={tabledata} />
             <Modal open={Transactionform} footer={null} onCancel={() => { setTransactionForm(false) }}>
-                <Flex gap={10} align="end" wrap >
-                    <br></br>
-                    <TextField className='m-1  w-100' label="Student Id" variant="outlined" value={formdata.stu_id} onChange={stuidsearch} />
-                    <div className='mt-2 w-100' style={{ background: 'whitesmoke', }}>
-                        {
-                            stuSearch_result.map((each) => (
-                                <Flex key={each.stu_id} vertical className='m-1 p-2 search-suggestion' style={{ background: "white", width: "100%" }} onClick={() => handleSearchResultClick(each.stu_id)}>
-                                    <Text>{each.stu_id}</Text>
-                                    <Text style={{ fontSize: 11 }}>{each.name}</Text>
-                                </Flex>
-                            ))
-                        }
-                    </div>
+                <Spin tip="Loading...." size='large' spinning={loading}>
+                    <Flex gap={10} align="end" wrap >
+                        <br></br>
+                        <TextField className='m-1  w-100' label="Student Id" variant="outlined" value={formdata.stu_id} onChange={stuidsearch} />
+                        <div className='mt-2 w-100' style={{ background: 'whitesmoke', }}>
+                            {
+                                stuSearch_result.map((each) => (
+                                    <Flex key={each.stu_id} vertical className='m-1 p-2 search-suggestion' style={{ background: "white", width: "100%" }} onClick={() => handleSearchResultClick(each.stu_id)}>
+                                        <Text>{each.stu_id}</Text>
+                                        <Text style={{ fontSize: 11 }}>{each.name}</Text>
+                                    </Flex>
+                                ))
+                            }
+                        </div>
 
-                    <TextField className='m-1 w-100' label="Medicine" variant="outlined" value={formdata.med_id} onChange={handleSearch} />
-                    <div className='mt-2 w-100' style={{ background: 'whitesmoke', }}>
-                        {
-                            search_result.map((each) => (
-                                <SearchSuggest key={each.id} data={each} setSerachResult={setSerachResult} transaction={true} formdata={formdata} setFormData={setFormData} />
+                        <TextField className='m-1 w-100' label="Medicine" variant="outlined" value={formdata.med_id} onChange={handleSearch} />
+                        <div className='mt-2 w-100' style={{ background: 'whitesmoke', }}>
+                            {
+                                search_result.map((each) => (
+                                    <SearchSuggest key={each.id} data={each} setSerachResult={setSerachResult} transaction={true} formdata={formdata} setFormData={setFormData} />
 
-                            ))
-                        }
+                                ))
+                            }
 
-                    </div>
-                    <TextField className='m-1 w-100' label="Quantity" variant="outlined" value={formdata.quantity} onChange={(e) => { setFormData((prev) => ({ ...prev, quantity: e.target.value })) }} />
-                    {arrTran.map((each, index) => (
+                        </div>
+                        <TextField className='m-1 w-100' label="Quantity" variant="outlined" value={formdata.quantity} onChange={(e) => { setFormData((prev) => ({ ...prev, quantity: e.target.value })) }} />
+                        {arrTran.map((each, index) => (
 
-                        <Button key={index}>
-                            {each.med_id}:{each.quantity} <MdOutlineClear onClick={()=>{const tempArr= [...arrTran.slice(0, index), ...arrTran.slice(index + 1)];setArrTran([...tempArr])}} />
-                        </Button>
+                            <Button key={index}>
+                                {each.med_id}:{each.quantity} <MdOutlineClear onClick={() => { const tempArr = [...arrTran.slice(0, index), ...arrTran.slice(index + 1)]; setArrTran([...tempArr]) }} />
+                            </Button>
 
-                    ))
+                        ))
 
 
-                    }<br></br>
-                    <Button onClick={handleAdditionClick}><FaPlus></FaPlus> Add</Button>
+                        }<br></br>
+                        <Button onClick={handleAdditionClick}><FaPlus></FaPlus> Add</Button>
 
-                    <TextField className='m-1 w-100' label="Reason" variant="outlined" value={formdata.reason} onChange={(e) => { setFormData((prev) => ({ ...prev, reason: e.target.value })) }} />
+                        <TextField className='m-1 w-100' label="Reason" variant="outlined" value={formdata.reason} onChange={(e) => { setFormData((prev) => ({ ...prev, reason: e.target.value })) }} />
 
-                    <Flex justify='end'>
-                        <Button type='primary' className='mt-3' onClick={handleFormUpload}>Submit</Button>
+                        <Flex justify='end'>
+                            <Button type='primary' className='mt-3' onClick={handleFormUpload}>Submit</Button>
+                        </Flex>
                     </Flex>
-                </Flex>
+                </Spin>
             </Modal>
 
 

@@ -27,10 +27,10 @@ credentials: true,
     }))
 
 
-app.options('*', cors()); 
+// app.options('*', cors()); 
 
 // app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
+app.use(express.json());
 // app.use(cookieParser());
 app.use(upload_file.array("img"));
 

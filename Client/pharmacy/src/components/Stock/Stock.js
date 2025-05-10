@@ -108,7 +108,11 @@ const Stock = props => {
         try {
 
 
-            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/stock/add-stock', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/stock/add-stock', form_Data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
             console.log(result);
             success("Stock Added Successfully");
             setUser(prev=>({...prev}));

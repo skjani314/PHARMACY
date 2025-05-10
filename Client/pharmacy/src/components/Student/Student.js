@@ -41,7 +41,11 @@ const Student = props => {
         try {
 
 
-            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/student/add-student', form_Data, { withCredentials: true });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/student/add-student', form_Data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
             console.log(result);
             success("Student Added Successfully");
             setFormData((prev) => ({ stu_id: '', name: '', class_name: '', dorm: '' }))
