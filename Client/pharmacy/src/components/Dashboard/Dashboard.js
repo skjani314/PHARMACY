@@ -35,7 +35,11 @@ const Dashboard = () => {
 
       try {
 
-        const result = await axios.get(process.env.REACT_APP_API_URL+'/api/auth/dashboarddata',{ withCredentials: true, });
+        const result = await axios.get(process.env.REACT_APP_API_URL+'/api/auth/dashboarddata', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
         console.log(result)
 
         setData({ ...result.data})

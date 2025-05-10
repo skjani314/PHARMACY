@@ -66,7 +66,11 @@ const Stock = props => {
 
                 const start = new Date();
                 start.setDate(start.getDate() - 5);
-                const result = await axios.get(process.env.REACT_APP_API_URL+'/api/stock/get-stock',{ withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL+'/api/stock/get-stock', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
                 //  console.log(result);
                 setRows(prev => ([...prev, ...result.data]));
             } catch (err) {
@@ -149,7 +153,11 @@ const Stock = props => {
         try {
 
             
-            const result = await axios.get(process.env.REACT_APP_API_URL+'/api/stock/get-stock?flag=false&start=' + dates[0].toISOString().split('T')[0] + '&end=' + dates[1].toISOString().split('T')[0],{ withCredentials: true, });
+            const result = await axios.get(process.env.REACT_APP_API_URL+'/api/stock/get-stock?flag=false&start=' + dates[0].toISOString().split('T')[0] + '&end=' + dates[1].toISOString().split('T')[0], {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
 
             setRows(prev => ([...result.data]));
         } catch (err) {

@@ -13,7 +13,7 @@ AuthRoutes.post('/forget/verify', ForgetVerify)
 AuthRoutes.post('/passchange', PassChange)
 AuthRoutes.post('/get-user', getUser)
 // AuthRoutes.post('/register', register);
-AuthRoutes.post('/logout',Logout);
+// AuthRoutes.post('/logout',Logout);
 AuthRoutes.get('/dashboarddata',authenticate,getDashboardData);
 
 export default AuthRoutes;

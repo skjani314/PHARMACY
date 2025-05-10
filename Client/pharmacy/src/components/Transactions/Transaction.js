@@ -62,7 +62,11 @@ const Transaction = props => {
 
             setLoading(true);
             try {
-                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/transaction/get-transaction', { withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/transaction/get-transaction',  {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
                 setTableData([...result.data]);
                 console.log(result.data)
             }
@@ -130,7 +134,11 @@ const Transaction = props => {
 
         setLoading(true);
         try {
-            const result = await axios.get(process.env.REACT_APP_API_URL + `/api/transaction/get-transaction?start=${datseRange.start}&end=${datseRange.end}`, { withCredentials: true, });
+            const result = await axios.get(process.env.REACT_APP_API_URL + `/api/transaction/get-transaction?start=${datseRange.start}&end=${datseRange.end}`,  {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
             setTableData([...result.data])
             console.log(result.data)
         }
@@ -146,7 +154,11 @@ const Transaction = props => {
         if (e.target.value != "") {
             try {
 
-                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/student/get-student?stu_id=' + e.target.value, { withCredentials: true, });
+                const result = await axios.get(process.env.REACT_APP_API_URL + '/api/student/get-student?stu_id=' + e.target.value,  {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
                 setstuSearch([...result.data]);
             } catch {
                 error("something went wrong");

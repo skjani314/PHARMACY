@@ -59,7 +59,11 @@ const [usage,setUsage]=useState(null)
         setLoading(true);
         console.log(props.data.name);
         try {
-            const result = await axios.delete(process.env.REACT_APP_API_URL+`/api/medicine/delete-medicine?id=${props.data.name}`,{ withCredentials: true, });
+            const result = await axios.delete(process.env.REACT_APP_API_URL+`/api/medicine/delete-medicine?id=${props.data.name}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
             console.log(result);
             success("deleted succesfully");
             setLoading(true);
@@ -94,7 +98,11 @@ const handleEditUpload=async ()=>{
     
    
       setLoading(true);
-      const result=await axios.put(process.env.REACT_APP_API_URL+`/api/medicine/update-medicine`,form_Data,{ withCredentials: true, })
+      const result=await axios.put(process.env.REACT_APP_API_URL+`/api/medicine/update-medicine`,form_Data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }})
       console.log(result);
       success("updated successfully");
       setIsEdit(false);

@@ -15,6 +15,7 @@ import StockPage from './pages/StockPage';
 import StudentPage from './pages/StudentPage';
 import TransactionsPage from './pages/TransactionsPage';
 import NotFoundPage from './components/NotFound/NotFound';
+import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('DASHBOARD');
@@ -43,7 +44,11 @@ const App = () => {
     const getUser = async () => {
       try {
 
-        const result = await axios.post(process.env.REACT_APP_API_URL+'/api/auth/get-user',{},{ withCredentials: true, });
+        const result = await axios.post(process.env.REACT_APP_API_URL+'/api/auth/get-user',{}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
         console.log(result);
         setUser(result.data);
         flag = true;
@@ -78,11 +83,10 @@ const App = () => {
 
     }
 
-    if (!flag) {
+    if (localStorage.getItem('accessToken')) {
       getUser();
-      med_fun();
     }
-    return () => { flag = true; }
+        med_fun();
   }, [])
 
 
@@ -117,12 +121,12 @@ const App = () => {
       <BrowserRouter>
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route exact path='/dashboard' component={user ? DashBoardPage : NotFoundPage} />
-          <Route path='/forgot/:token' component={Forgotpass} />
-          <Route exact path='/medicinepage' component={user ? MedicinePage :NotFoundPage} />
-          <Route exact path='/studentpage' component={user ? StudentPage : NotFoundPage} />
-          <Route exact path='/transactionpage' component={user ? TransactionsPage : NotFoundPage} />
-          <Route exact path='/stockpage' component={user ? StockPage : NotFoundPage} />
+          <PrivateRoutes exact path='/dashboard' component={DashBoardPage} />
+          <PrivateRoutes path='/forgot/:token' component={Forgotpass} />
+          <PrivateRoutes exact path='/medicinepage' component={MedicinePage} />
+          <PrivateRoutes exact path='/studentpage' component={StudentPage} />
+          <PrivateRoutes exact path='/transactionpage' component={TransactionsPage} />
+          <PrivateRoutes exact path='/stockpage' component={StockPage} />
           <Route path="*" component={NotFoundPage} />
           <Route />
         </Switch>

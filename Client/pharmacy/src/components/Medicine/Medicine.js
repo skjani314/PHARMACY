@@ -77,7 +77,11 @@ if((formdata.name && formdata.usage && formdata.category!="Select a category") |
     }
 
         try {
-            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/medicine/add-medicine', form_Data,{ withCredentials: true, });
+            const result = await axios.post(process.env.REACT_APP_API_URL+'/api/medicine/add-medicine', form_Data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+          "Content-Type": "application/json",
+        }});
             console.log(result);
             setLoading(false);
                if(!med_form.bulk){

@@ -7,6 +7,7 @@ import Student from '../modals/Student.js';
 import Stock from '../modals/Stock.js';
 import Medicine from '../modals/Medicine.js';
 
+
 export const Login= async (req, res, next) => {
     try {
       const { email, password } = req.body;
@@ -23,16 +24,16 @@ export const Login= async (req, res, next) => {
       if (isMatch) {
         const accessToken = jwt.sign({ email }, process.env.KEY, { expiresIn: '7d' });
   
-        res.cookie('accessToken', accessToken, {
-          httpOnly: true,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-          secure: true,
-          sameSite: 'None',
-          path: '/',
+        // res.cookie('accessToken', accessToken, {
+        //   httpOnly: true,
+        //   maxAge: 7 * 24 * 60 * 60 * 1000,
+        //   secure: true,
+        //   sameSite: 'None',
+        //   path: '/',
   
-        });
+        // });
   
-        return res.status(200).json("logged in sucessfully");
+        return res.status(200).json(accessToken);
       } else {
         return res.status(401).json({ message: "Password incorrect" });
       }
@@ -156,7 +157,7 @@ export const PassChange = async (req, res, next) => {
  export const getUser = async (req, res, next) => {
 
 
-    const accessToken = req.cookies.accessToken;
+        const accessToken = req.headers.authorization.split(" ")[1];
     if (!accessToken){ next(new Error("jwt token not found"))}
     else{
     await jwt.verify(accessToken, process.env.KEY, async (err, decode) => {

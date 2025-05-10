@@ -61,12 +61,21 @@ const handleLogData=(e)=>
       e.preventDefault();
       setLoading(true);
        try{
+        const form_data=new FormData();
+        form_data.append('email',LogData.email);
+        form_data.append('password',LogData.password);
         
-       await axios.post(process.env.REACT_APP_API_URL+'/api/auth/login',LogData, { withCredentials: true })
-    
+        const accessResult= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/login',form_data)
+        console.log(accessResult);
+       localStorage.setItem('accessToken',accessResult.data);
+
         setLogdata({email:'',password:''});
         handleCancel();
-        const result= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/get-user',{},{ withCredentials: true, });
+        const result= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/get-user',{}, {
+        headers: {
+          Authorization: `Bearer ${accessResult.data}`, 
+          "Content-Type": "application/json",
+        }});
         setUser(result.data);
         setLoading(false);
         success("Logged In successfully");
@@ -86,8 +95,13 @@ const handleLogout=async ()=>{
   setLoading(true);
   try{
   
-    await axios.post(process.env.REACT_APP_API_URL+'/api/auth/logout',{},{ withCredentials: true, })
-     success("logged out successfully");
+    // await axios.post(process.env.REACT_APP_API_URL+'/api/auth/logout',{}, {
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
+        //   "Content-Type": "application/json",
+        // }})
+    localStorage.removeItem('accessToken');
+    success("logged out successfully");
      setUser(null);
      setLoading(false);
      history.push('/');
