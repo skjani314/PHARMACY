@@ -11,7 +11,6 @@ import { upload_file } from './middlewares/multer.js';
 const app = express();
 
 
-
 app.use(cors({
     origin: (origin, callback) => {
       const allowedOrigins = ['https://pharmacy-xi-one.vercel.app','http://localhost:3000'];
@@ -21,12 +20,14 @@ app.use(cors({
           callback(new Error('Not allowed by CORS')); 
       }
   },
-      methods:["POST","GET","PUT","DELETE"],  
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+allowedHeaders: ['Content-Type', 'Authorization'],
+credentials: true,
+
     }))
 
 
-
-
+app.options('*', cors()); 
 
 // app.use(express.urlencoded({ extended: true }));
 // app.use(express.json());
