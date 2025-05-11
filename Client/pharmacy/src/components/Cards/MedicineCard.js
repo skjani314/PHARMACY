@@ -101,7 +101,7 @@ const handleEditUpload=async ()=>{
       const result=await axios.put(process.env.REACT_APP_API_URL+`/api/medicine/update-medicine`,form_Data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         }})
       console.log(result);
       success("updated successfully");

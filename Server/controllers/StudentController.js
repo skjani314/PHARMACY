@@ -2,8 +2,7 @@ import fs from 'fs';
 import xlsx from 'xlsx';
 import Student from '../modals/Student.js';
 import { promise } from 'bcrypt/promises.js';
-
-
+import Transactions from '../modals/Transaction.js';
 export const AddStudent = async (req, res, next) => {
 
 
@@ -69,7 +68,7 @@ export const DeleteStudent = async (req, res, next) => {
 
     }
     else {
-      if (!batch || batch.length < 4 || batch[0] != 'r' || batch[1] != 'o') next(new Error("batch is empty"));
+      if (!batch || batch.length < 4 || batch[0] != 'o') next(new Error("batch is empty"));
       else {
 
         const studentsToDelete = await Student.find({ stu_id: { $regex: new RegExp(`^.*${batch}.*$`, 'i') } });

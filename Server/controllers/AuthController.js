@@ -14,7 +14,7 @@ export const Login= async (req, res, next) => {
   
   
       const user = await User.findOne({ email });
-  
+      console.log(email)
       if (!user) {
         next(new Error("User Not Found"));
       }

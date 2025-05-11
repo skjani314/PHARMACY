@@ -9,7 +9,7 @@ import StockSearchSuggest from '../Cards/StockSearchSuggest';
 import axios from 'axios';
 import Transactiontable from '../Tables/TransactionTable';
 import xldemo from './stock.png';
-
+import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 
 const downloadExcel = (jsonData, filename) => {
@@ -25,7 +25,6 @@ const downloadExcel = (jsonData, filename) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     workbook.Sheets['Sheet1'] = worksheet;
     workbook.SheetNames[0]='Sheet1';
-console.log(workbook)
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = URL.createObjectURL(blob);
@@ -52,6 +51,8 @@ const Stock = props => {
     const [search_result, setSerachResult] = useState([]);
     const [rowsData, setRows] = useState([]);
     const [dates, setDates] = useState([]);
+    // const [refreshKey, setRefreshKey] = useState(0);
+
     const handleUploadChange = ({ fileList }) => {
         setFileList(fileList);
     };
@@ -59,7 +60,7 @@ const Stock = props => {
         changeActiveTab('STOCK');
 
 
-        const rowsData = async () => {
+        const getRowsData = async () => {
             setLoading(true);
             try {
                 const today = new Date();
@@ -71,16 +72,16 @@ const Stock = props => {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
           "Content-Type": "application/json",
         }});
-                //  console.log(result);
-                setRows(prev => ([...prev, ...result.data]));
+                 console.log(result);
+                setRows(prev => ([...result.data]));
+                // setRefreshKey(prev => prev + 1); 
+
             } catch (err) {
                 error("something went wrong");
             }
             setLoading(false);
         }
-
-
-        rowsData()
+        getRowsData()
 
     }, [user]);
 
@@ -99,7 +100,7 @@ const Stock = props => {
             form_Data.append('img', file.originFileObj);
         });
 
-
+console.log(formdata);
         if (!stock_form.bulk) {
             form_Data.append('imported_quantity', formdata.imported_quantity);
             form_Data.append('expery', formdata.expery);
@@ -111,14 +112,14 @@ const Stock = props => {
             const result = await axios.post(process.env.REACT_APP_API_URL+'/api/stock/add-stock', form_Data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         }});
-            console.log(result);
             success("Stock Added Successfully");
             setUser(prev=>({...prev}));
             setFormData((prev) => ({ imported_quantity: '', expery: '', med_id: '' }))
             setFileList([]);
             setStockForm((prev) => ({ bulk: false, single: false }))
+            setUser((prev) => ({ ...prev }));
         }
         catch (err) {
             error("something went wrong");
@@ -189,7 +190,7 @@ const Stock = props => {
                 <Button type='primary' onClick={handleDatesChange}>Submit</Button>
             </Flex>
 
-            <Transactiontable rowsData={rowsData} />
+            <Transactiontable  rowsData={rowsData} />
 
 
             <Modal open={stock_form.single} footer={null} onCancel={() => { setStockForm((prev) => ({ ...prev, single: false })) }}>
@@ -205,7 +206,22 @@ const Stock = props => {
                     </div>
                     <Flex gap={10} align="end" wrap >
                         <TextField label="Quantity" variant="outlined" value={formdata.imported_quantity} onChange={(e) => { setFormData((prev) => ({ ...prev, imported_quantity: e.target.value })) }} />
-                        <TextField label="expery" variant="outlined" value={formdata.expery} onChange={(e) => { setFormData((prev) => ({ ...prev, expery: e.target.value })) }} />
+                        {/* <TextField label="expery" variant="outlined" value={formdata.expery} onChange={(e) => { setFormData((prev) => ({ ...prev, expery: e.target.value })) }} /> */}
+                            <DatePicker
+                        onChange={(date => { setFormData((prev) => ({ ...prev, expery: dayjs(date).format('YYYY-MM-DD') })) })}
+                        format="YYYY-MM-DD"
+                        placeholder="Select date"
+                        style={{
+    height: '56px',         
+    padding: '0 14px',      
+    fontSize: '16px',       
+    borderRadius: '4px',  
+    border: '1px solid black',
+    
+  }}
+
+  
+                    />
                     </Flex>
 
                     <Flex justify='end'>

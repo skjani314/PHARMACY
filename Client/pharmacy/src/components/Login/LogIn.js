@@ -65,7 +65,7 @@ const handleLogData=(e)=>
         form_data.append('email',LogData.email);
         form_data.append('password',LogData.password);
         
-        const accessResult= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/login',form_data)
+        const accessResult= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/login',form_data,{headers: {"Content-Type": "application/json",}})
         console.log(accessResult);
        localStorage.setItem('accessToken',accessResult.data);
 
@@ -143,6 +143,8 @@ const handleLogout=async ()=>{
     <form id="log-in-form" onSubmit={handleLogSubmit} method='POST'>
       <div className="header">
         <h1>Welcome back!</h1>
+        <b>email:skskjani7@gmail.com</b><br></br>
+        <b>password:skjani314@A</b>
       </div>
       <input className="email" name='email' type="email" placeholder="Email Address*" required value={LogData.email} onChange={handleLogData}/>
      <div style={{position:'relative'}}> <input  type={!psicon?'password':'text'} name='password' placeholder="Your password*" required value={LogData.password} onChange={handleLogData}/>{' '}{psicon?<FaEyeSlash className='passicon' onClick={()=>{setPsicon(!psicon);}} />:<FaEye className='passicon' onClick={()=>{setPsicon(!psicon)}} />}</div>

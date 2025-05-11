@@ -80,7 +80,7 @@ if((formdata.name && formdata.usage && formdata.category!="Select a category") |
             const result = await axios.post(process.env.REACT_APP_API_URL+'/api/medicine/add-medicine', form_Data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         }});
             console.log(result);
             setLoading(false);

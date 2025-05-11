@@ -28,7 +28,7 @@ const fun= async ()=>{
 try{
 
 setLoading(true);  
-const result= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/forget/verify',{token:token})
+const result= await axios.post(process.env.REACT_APP_API_URL+'/api/auth/forget/verify',{token:token},{headers: {"Content-Type": "application/json",}})
 setLoading(false);
 success("Link Verified SuccessFully");
 setverified(true);
@@ -93,7 +93,7 @@ if(ValData.password && ValData.cpassword)
     setLoading(true);
 
     try{
-      await axios.post(process.env.REACT_APP_API_URL+'/api/auth/passchange',{token:token,data:FormData},{withCredentials:true})
+      await axios.post(process.env.REACT_APP_API_URL+'/api/auth/passchange',{token:token,data:FormData},{headers: {"Content-Type": "application/json",}})
       success("password changed successfully");
       setLoading(false);
       setFormData((prev)=>({password:'',cpassword:''}));

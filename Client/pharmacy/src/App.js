@@ -66,10 +66,7 @@ const App = () => {
 
         const med_data = await axios.get(process.env.REACT_APP_API_URL+'/api/medicine/get-medicine', {
           name: "", 
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
+          headers: {"Content-Type": "application/json",}
         });
         
         setMedData([...med_data.data]);

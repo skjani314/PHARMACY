@@ -116,7 +116,7 @@ export const deleteMedicine = async (req, res, next) => {
 
     const {useage,name}=req.body;
     
-    if(req.files.length>0 && useage!=null){
+    if(req.files?.length>0 && useage!=null){
     await Medicine.findOneAndUpdate({name},{useage, img: { data: fs.readFileSync(req.files[0].path), contentType: req.files[0].mimetype } })
     fs.unlinkSync(req.files[0].path);
     

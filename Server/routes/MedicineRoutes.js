@@ -6,9 +6,9 @@ import { upload_file } from '../middlewares/multer.js';
 const MedicineRoutes = express.Router();
 
 MedicineRoutes.get('/get-medicine',getMedicines);
-MedicineRoutes.post('/add-medicine',authenticate,AddMedicine);
+MedicineRoutes.post('/add-medicine',authenticate,upload_file.array("img"),AddMedicine);
 MedicineRoutes.delete('/delete-medicine',authenticate,deleteMedicine);
-MedicineRoutes.put('/update-medicine',authenticate,updateMedicine);
+MedicineRoutes.put('/update-medicine',authenticate,upload_file.array("img"),updateMedicine);
 
 
 export default MedicineRoutes;

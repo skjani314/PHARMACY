@@ -28,11 +28,13 @@ credentials: true,
 
 
 // app.options('*', cors()); 
+// app.use(upload_file.array("img"));
+
+
 
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // app.use(cookieParser());
-app.use(upload_file.array("img"));
 
 app.set("trust proxy",1);
 
